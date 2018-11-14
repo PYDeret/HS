@@ -5,6 +5,16 @@
   <div class="col-md-12">
     <h1>Votre collection de cartes</h1> {{ heroes }}
     <div class="row">
+        <style>
+
+            .img-thumbnail {
+              padding: 0 !important;
+              border-radius: unset !important;
+              border: unset !important;
+            }
+          
+        </style>
+      
       {% for card in cards %}
       <div class="col-3 text-center single-card my-4">
           <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail">

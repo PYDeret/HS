@@ -51,31 +51,13 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="index.html" class="logo">
+    <a href="{% url 'index' %}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-lg">
 		  <img src="{% static 'images/hs_txt.png' %}" style="max-width: 190px;" class="light-logo">
 	  </span>
     </a>
-    <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-
-          <li class="search-box">
-            <a class="nav-link hidden-sm-down" href="javascript:void(0)"><i class="mdi mdi-magnify"></i></a>
-            <form class="app-search" style="display: none;">
-              <input type="text" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i class="ti-close"></i></a>
-            </form>
-          </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    
   </header>
 
   <!-- Left side column. contains the logo and sidebar -->
@@ -88,7 +70,7 @@
         <li class="user-profile treeview" style="text-align:center">
           {% if request.user.is_authenticated %}
 
-            <a href="index.html">
+            <a href="{% url 'index' %}">
               <img src="{% static 'images/merly.png' %}" alt="user">
               <span>{{ request.user.username }}</span>
               <span class="pull-right-container">
@@ -105,7 +87,7 @@
         </li>
         <li class="header nav-small-cap">PROFIL</li>
         <li class="active">
-          <a href="index.html">
+          <a href="{% url 'index' %}">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-right pull-right"></i>
@@ -137,8 +119,8 @@
         {% else %}
 
             <li class="active">
-              <a href="{% url 'myHeroes' %}">
-                <i class="fa fa-dashboard"></i> <span>Mes Heros</span>
+              <a href="{% url 'myCards' %}">
+                <i class="fa fa-dashboard"></i> <span>Ma liste de cartes</span>
                 <span class="pull-right-container">
                   <i class="fa fa-angle-right pull-right"></i>
                 </span>
@@ -187,8 +169,6 @@
             </div>
             {% endfor %}
             {% endif %}
-
-            {% block content %}{% endblock %}
           </div>
         </div>
 
