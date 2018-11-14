@@ -1,14 +1,14 @@
 from django.http import HttpResponse
 import json
 import os
-from hearthstone.models import Hero, Minion, Spell, UserHero, Deck, Party, UserMinion
+from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard
 from random import randint
 from pprint import pprint
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from .forms import UserRegisterForm
-from .forms import DeckForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 
 def index(request):
     if not Hero.objects.all():
@@ -18,12 +18,15 @@ def index(request):
             data = json.load(f)
 
         for card in data["Basic"]:
-                if card["type"] == "Spell" or card["type"] == "Enchantment":
+                #enchantements not used
+                if card["type"] == "Spell":
 
                     Spell.objects.create(
                         name=card.get("name"),
                         playerClass=card.get("playerClass"),
-                        cost=card.get("cost",0)
+                        cost=card.get("cost",0),
+                        img_url=card.get("img", "https://i.imgur.com/U1dkXzQ.png"),
+                        rarity= card.get("rarity","NAN"),
                     )
 
                 elif card["type"] == "Hero":
@@ -46,10 +49,11 @@ def index(request):
                     attack=card.get("attack",0),
                     health=card.get("health",1),
                     playerClass=card.get("playerClass"),
-                    rarity= card.get("rarity",0)
+                    rarity= card.get("rarity","NAN"),
+                    img_url=card.get("img","https://i.imgur.com/U1dkXzQ.png"),
                 )
                 
-    return HttpResponse("G g .")
+    return render(request, 'hearthstone/index.html')
 
 def home(request):
     title = 'Accueil'
@@ -62,12 +66,23 @@ def home(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_user = form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Hello {username}, votre compte a bien été créé !')
+            new_user = authenticate(
+                username = username,
+                password=form.cleaned_data['password1'],
+            )
+            login(request, new_user)
+            for c in Card.objects.filter(rarity="Free"):
+                UserCard.objects.create(user = new_user, card = c)
+        
             return redirect('home')
     else:
         form = UserRegisterForm()
@@ -76,21 +91,16 @@ def register(request):
 def party(request):
     return render(request, 'hearthstone/party.html')
 
-def hero(request, hero_id):
-    hero = get_object_or_404(Card, pk=card_id)
-    userHero = UserHero.objects.all().filter(user_id=request.user.id, hero_id=hero_id).first()
-    return render(request, 'hearthstone/card.html', {'card': card, 'cardUser':cardUser})
-
-def buyHero(request):
-    heroCounter = Minion.objects.all().count()
-    heroes = []
+def buyCards(request):
+    cardsCounter = Card.objects.all().count()
+    cards = []
     if request.user.is_authenticated and request.user.profile.credit >= 100:
         for i in range(8):
-            random_index = randint(0, heroCounter - 1)
-            hero = Minion.objects.all()[random_index]
-            heroes.append(hero)
-            userHero = UserMinion(user=request.user, minion = hero)
-            userHero.save()
+            random_index = randint(0, cardsCounter - 1)
+            card = Card.objects.all()[random_index]
+            cards.append(card)
+            userCard = UserCard(user=request.user, card = card)
+            userCard.save()
         request.user.profile.credit -= 100
         request.user.save()
     elif request.user.is_authenticated and request.user.profile.credit < 100:
@@ -100,25 +110,20 @@ def buyHero(request):
         messages.warning(request, f'Vous devez être connecté pour accéder à cette page')
         return redirect('home')
 
-    return render(request, 'hearthstone/buy-heroes.html', {'heroes': heroes})
+    return render(request, 'hearthstone/buy-cards.html', {'cards': cards})
 
-def sellHero(request, carduser_id):
+def sellCard(request, carduser_id):
     card = get_object_or_404(CardUser, pk=carduser_id)
     card.delete()
     request.user.profile.credit += 10
     request.user.save()
-    return redirect('myHeroes')
+    return redirect('myCards')
 
 
-def myHeroes(request):
-    userHeroes = UserHero.objects.all().filter(user_id=request.user.id)
-    myHeroes = []
+def myCards(request):
+    cards = UserCard.objects.filter(user_id=request.user.id)
 
-    for userHero in userHeroes:
-        hero = userHero.hero
-        myHeroes.append(hero)
-
-    return render(request, 'hearthstone/my-heroes.html', {'heroes': myHeroes})
+    return render(request, 'hearthstone/my-cards.html', {'cards': cards})
 
 
 def myDecks(request):
@@ -128,33 +133,47 @@ def myDecks(request):
 
 
 def deck(request, deck_id):
-    deck = get_object_or_404(Deck, pk=deck_id)
+    deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+    
+    idCards = deck.cards
 
-    cardsDeck = CardDeck.objects.all().filter(deck_id=deck_id)
-    cards = []
-
-    for card in cardsDeck:
-        cards.append(card.card)
+    cards = Card.objects.filter(id__in=json.loads(idCards))
 
     return render(request, 'hearthstone/deck.html', {'cards': cards, 'deck': deck})
 
 
 def createDeck(request):
+
+    heros = Hero.objects.all()
+
+    return render(request, 'hearthstone/create-deck.html', {'heros': heros})
+
+def createDeckByHero(request, hero_id):
+
+    hero = Hero.objects.get(pk=hero_id)
+    cards = Card.objects.filter(playerClass__in=[hero.playerClass, 'Neutral'])
+    finished = False;
+
     if request.POST:
-        form = DeckForm(request.POST)
-        if form.is_valid():
-            deck = Deck()
-            deck = form.save(commit=False)
-            deck.user = request.user
-            deck.save()
+        title = request.POST.get("title", "")
+        cards = request.POST.getlist("cards", "")
 
-            title = form.cleaned_data.get('title')
-            messages.success(request, f'Le deck {title} a bien été créé !')
+        cards = list(map(int, cards))
 
-            return redirect('deck', deck.pk)
-    else:
-        form = DeckForm()
-    return render(request, 'hearthstone/create-deck.html', {'form': form})
+        if len(cards) == 30:
+            finished = True;
+
+        newDeck = Deck.objects.create(
+            user=request.user,
+            title=title,
+            cards=json.dumps(cards),
+            finished=finished
+        )
+
+        messages.success(request, f'Le deck {title} a bien été créé !')      
+
+    return render(request, 'hearthstone/create-deck-by-hero.html', {'cards': cards})
+    
 
 
 def deleteDeck(request, deck_id):
@@ -167,15 +186,16 @@ def deleteDeck(request, deck_id):
 
 def updateDeck(request, deck_id):
     if request.POST:
-        deck = get_object_or_404(Deck, pk=deck_id)
-        cards = request.POST.items()
+        deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+    
+        idCards = deck.cards
 
-        cardDeck = CardDeck.objects.all().filter(deck_id=deck_id)
+        cards = Card.objects.filter(id__in=json.loads(idCards))
 
-        for cardDeck in cardDeck:
-            cardDeck.delete()
+        for card in cards:
+            card.delete()
 
-        for key, value in cards:
+        for key, value in cardsRequesteds:
             if key[:4] == 'card':
                 cardId = key.split('_')[1]
 
@@ -186,20 +206,11 @@ def updateDeck(request, deck_id):
 
         return redirect('deck', deck.pk)
     else:
-        deck = get_object_or_404(Deck, pk=deck_id)
+        deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+    
+        idCards = deck.cards#id des cartes du deck
 
-        cardsUser = CardUser.objects.all().filter(user_id=request.user.id)
-        cards = []
+        cardsUser = UserCard.objects.filter(user_id=request.user.id)#cartes de l'user
+        cardsDeck = Card.objects.filter(id__in=json.loads(idCards))#cartes du deck
 
-        cardsDeck = CardDeck.objects.all().filter(deck_id=deck_id)
-        cardsUsed = []
-
-        for card in cardsDeck:
-            cardsUsed.append(card.card.pk)
-
-        for cardUser in cardsUser:
-            card = cardUser.card
-            cards.append(card)
-
-        return render(request, 'hearthstone/update-deck.html', {'cards': cards, 'deck': deck, 'cardsUsed' : cardsUsed})
-
+        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck})
