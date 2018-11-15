@@ -19,9 +19,8 @@
         
         </style>
 
-    <h1>Deck : {{ deck.title }}</h1>
+    <h1>{{ deck.title }}</h1>
 
-    <h2>Choisissez vos cartes :</h2>
     <p>Nombre de cartes <span id="card_number"></span>/30</p>
     <form method="post">
       {% csrf_token %}
@@ -30,21 +29,22 @@
 
           {% for card in cards %}
 
+            {% if card.card.id in l %}
 
-              {% for cardd in cardsUsed %}
+              <div class="col-3 text-center single-card my-4 card selected" style="background: transparent;">
+                  <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
+              </div>
+              <input type="checkbox" name="cards[]" value="{{ card.card.id }}" checked>
 
-                {% if cardd.strip == card.card.name.strip %}
-  a
-                {% else %}
-                z
-                {% endif %}
+            {% else %}
 
-              {% endfor %}
-            
-          <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
-              <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
-          </div>
-          <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
+              <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
+                  <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
+              </div>
+              <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
+
+            {% endif %}
+          
         {% empty %}
        
         <div class="col">
