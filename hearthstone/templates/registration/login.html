@@ -4,37 +4,51 @@
 
 <div class="row my-5">
   <div class="col-md-12">
+
     {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+      <p style="text-align: center;margin-top: 30px;padding: 10px;background: indianred;">
+        Le pseudo et le mot ne passe ne correspondent pas, veuillez réessayer
+      </p>
     {% endif %}
 
     {% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
+      {% if not user.is_authenticated %}
+      <p style="text-align: center;margin-top: 30px;padding: 10px;background: indianred;">
+        Vous devez vous connecter vous accéder à cette page
+      </p>
+      {% endif %}
     {% endif %}
-    {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
-      {% csrf_token %}
+    <form method="post" action="{% url 'login' %}" class="form-horizontal form-element">
+        {% csrf_token %}
+        <div class="box-body">
 
-      {{ form }}
+          <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-2 control-label">Pseudo</label>
+  
+            <div class="col-sm-10">
+              <input type="text" class="form-control" placeholder="Pseudo" name="username">
+            </div>
+          </div>
 
-      <div class="form-group">
-        <button class="btn btn-outline-primary" type="submit">Je me connecte</button>
-        <input type="hidden" name="next" value="{{ next }}" />
-      </div>
-    </form>
-
-    {# Assumes you setup the password_reset view in your URLconf #}
-    <div class="border-top pt-3 mb-4">
-      <small class="text-muted">
-      <a href="{% url 'password_reset' %}">Mot de passe oublié ?</a><br>
-        Pas encore de compte ? <a class="ml-3" href="{% url 'register' %}">Inscrivez-vous</a><br>
-      </small>
-    </div>
+          <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 control-label">Mot de passe</label>
+  
+            <div class="col-sm-10">
+              <input type="password" class="form-control"  placeholder="Mot de passe" name="password1" required>
+            </div>
+          </div>
+        </div>
+        <div class="box-footer" style="background-color: transparent">
+          <input type="hidden" name="next" value="{{ next }}" />
+          <button type="submit" class="btn btn-info pull-right">Se connecter</button>
+        </div>
+        <small class="text-muted" style="padding:5px;">
+          <a href="{% url 'password_reset' %}">Mot de passe oublié ?</a><br>
+          <p style="padding: 5px;">Pas encore de compte ? <a class="ml-3" href="{% url 'register' %}">Inscrivez-vous</a><br></p>
+        </small>
+      </form>
+      
 
   </div>
 </div>

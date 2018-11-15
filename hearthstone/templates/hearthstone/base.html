@@ -86,7 +86,7 @@
           {% endif %}
         </li>
         <li class="header nav-small-cap">PROFIL</li>
-        <li class="active">
+        <li>
           <a href="{% url 'index' %}">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             <span class="pull-right-container">
@@ -97,7 +97,7 @@
 
         {% if not request.user.is_authenticated %}
 
-        <li class="active">
+        <li>
           <a href="{% url 'register' %}">
             <i class="fa fa-dashboard"></i> <span>S'inscrire</span>
             <span class="pull-right-container">
@@ -107,7 +107,7 @@
         </li>
 
 
-        <li class="active">
+        <li>
           <a href="{% url 'app_login' %}">
             <i class="fa fa-dashboard"></i> <span>Se connecter</span>
             <span class="pull-right-container">
@@ -118,7 +118,7 @@
 
         {% else %}
 
-            <li class="active">
+            <li>
               <a href="{% url 'myCards' %}">
                 <i class="fa fa-dashboard"></i> <span>Ma liste de cartes</span>
                 <span class="pull-right-container">
@@ -127,7 +127,7 @@
               </a>
             </li>
 
-            <li class="active">
+            <li>
               <a href="{% url 'myDecks' %}">
                 <i class="fa fa-dashboard"></i> <span>Mes decks</span>
                 <span class="pull-right-container">
@@ -138,7 +138,7 @@
 
           {% if request.user.is_staff %}
 
-            <li class="active">
+            <li>
               <a href="{% url 'admin:index' %}">
                 <i class="fa fa-dashboard"></i> <span>Administration</span>
                 <span class="pull-right-container">
@@ -149,7 +149,7 @@
 
           {% endif %}
 
-            <li class="active">
+            <li>
               <a href="{% url 'app_logout' %}">
                 <i class="fa fa-dashboard"></i> <span>Se déconnecter</span>
                 <span class="pull-right-container">
@@ -160,7 +160,7 @@
 
           {% endif %}
 
-        <div class="container content">
+        <!--<div class="container content">
           <div class="content-inside">
             {% if messages %}
             {% for message in messages %}
@@ -170,41 +170,14 @@
             {% endfor %}
             {% endif %}
           </div>
-        </div>
+        </div>-->
 
       </ul>
     </section>
   </aside>
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Dashboard
-      </h1>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <!---//////////////////////--->
-      <div class="row">
-        <div class="col-12 ">
-          <div class="box">
-
-           
                 {% block content %}{% endblock %}
-
-
-          </div>
-        </div>
-        <!-- /.col -->
-
-      </div>
-
-
-    </section>
-    <!-- /.content -->
   </div>
 
 </div>
