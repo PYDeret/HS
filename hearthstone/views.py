@@ -190,22 +190,12 @@ def deleteDeck(request, deck_id):
 def updateDeck(request, deck_id):
     if request.POST:
         deck = get_object_or_404(Deck, pk=deck_id)
+
+        cards = request.POST.getlist("cards[]", "")
     
-        idCards = deck.cards
-
-        cards = Card.objects.filter(id__in=json.loads(idCards))
-
-        for card in cards:
-            card.delete()
-
-        for key, value in cardsRequesteds:
-            if key[:4] == 'card':
-                cardId = key.split('_')[1]
-
-                card = get_object_or_404(Card, pk=cardId)
-
-                cardDeck = CardDeck(card=card, deck=deck)
-                cardDeck.save()
+        obj = Deck.objects.get(pk= deck_id)
+        obj.cards = json.dumps(cards)
+        obj.save()
 
         return redirect('deck', deck.pk)
     else:
@@ -216,4 +206,6 @@ def updateDeck(request, deck_id):
         cardsUser = UserCard.objects.filter(user_id=request.user.id)
         cardsDeck = Card.objects.filter(id__in=json.loads(idCards))
 
-        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck})
+        l = [cD.id for cD in cardsDeck]
+
+        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l})

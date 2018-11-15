@@ -19,20 +19,34 @@
         
         </style>
 
-    <h1>Deck : {{ deck.title }}</h1>
+    <h1>{{ deck.title }}</h1>
 
-    <h2>Choisissez vos cartes :</h2>
     <p>Nombre de cartes <span id="card_number"></span>/30</p>
     <form method="post">
       {% csrf_token %}
       <input type="submit" class="btn btn-outline-primary mt-3" value="Enregistrer">
       <div class="row">
+
           {% for card in cards %}
-          <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
-              <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
-          </div>
+
+            {% if card.card.id in l %}
+
+              <div class="col-3 text-center single-card my-4 card selected" style="background: transparent;">
+                  <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
+              </div>
+              <input type="checkbox" name="cards[]" value="{{ card.card.id }}" checked>
+
+            {% else %}
+
+              <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
+                  <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
+              </div>
+              <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
+
+            {% endif %}
+          
         {% empty %}
-        <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
+       
         <div class="col">
           Vous n'avez pas encore de cartes.
         </div>
