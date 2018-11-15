@@ -27,12 +27,26 @@
       {% csrf_token %}
       <input type="submit" class="btn btn-outline-primary mt-3" value="Enregistrer">
       <div class="row">
+
           {% for card in cards %}
+
+
+              {% for cardd in cardsUsed %}
+
+                {% if cardd.strip == card.card.name.strip %}
+  a
+                {% else %}
+                z
+                {% endif %}
+
+              {% endfor %}
+            
           <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
               <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
           </div>
+          <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
         {% empty %}
-        <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
+       
         <div class="col">
           Vous n'avez pas encore de cartes.
         </div>
