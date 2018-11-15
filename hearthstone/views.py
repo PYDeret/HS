@@ -133,7 +133,7 @@ def myDecks(request):
 
 
 def deck(request, deck_id):
-    deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+    deck = get_object_or_404(Deck, pk=deck_id)
     
     idCards = deck.cards
 
@@ -151,7 +151,8 @@ def createDeck(request):
 def createDeckByHero(request, hero_id):
 
     hero = Hero.objects.get(pk=hero_id)
-    cards = Card.objects.filter(playerClass__in=[hero.playerClass, 'Neutral'])
+    #cards = Card.objects.filter(playerClass__in=[hero.playerClass, 'Neutral'])
+    cardsUser = UserCard.objects.filter(user_id=request.user.id)
     finished = False;
 
     if request.POST:
@@ -172,7 +173,7 @@ def createDeckByHero(request, hero_id):
 
         messages.success(request, f'Le deck {title} a bien été créé !')      
 
-    return render(request, 'hearthstone/create-deck-by-hero.html', {'cards': cards})
+    return render(request, 'hearthstone/create-deck-by-hero.html', {'cards': cardsUser})
     
 
 
@@ -186,7 +187,7 @@ def deleteDeck(request, deck_id):
 
 def updateDeck(request, deck_id):
     if request.POST:
-        deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+        deck = get_object_or_404(Deck, pk=deck_id)
     
         idCards = deck.cards
 
@@ -206,11 +207,11 @@ def updateDeck(request, deck_id):
 
         return redirect('deck', deck.pk)
     else:
-        deck = get_object_or_404(Deck, pk=deck_id)# get deck passed in argument
+        deck = get_object_or_404(Deck, pk=deck_id)
     
-        idCards = deck.cards#id des cartes du deck
+        idCards = deck.cards
 
-        cardsUser = UserCard.objects.filter(user_id=request.user.id)#cartes de l'user
-        cardsDeck = Card.objects.filter(id__in=json.loads(idCards))#cartes du deck
+        cardsUser = UserCard.objects.filter(user_id=request.user.id)
+        cardsDeck = Card.objects.filter(id__in=json.loads(idCards))
 
         return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck})

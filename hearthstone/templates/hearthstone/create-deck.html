@@ -5,12 +5,12 @@
 {% block content %}
 <div class="row my-5">
   <div class="col-md-12">
-    <h1>Nouveau deck</h1>
-    <div class="row p-1">
+    <h1>Choississez votre héros</h1>
+    <div class="row p-1" style="margin-top:50px;">
       {% for h in heros %}
-          <div class="card col-md-3 p-3" style="width: 18rem;">
+          <div class="card col-md-3 p-3" style="width: 18rem;background: transparent;">
             <a href="{% url 'createDeckByHero' h.id %}">
-                <img class="card-img-top" src="{% static 'images/hearthstone-portrait-'%}{{ h.playerClass }}.png" alt="Card image cap">
+                <img class="card-img-top" src="{% static 'images/hearthstone-portrait-'%}{{ h.playerClass }}.png">
             </a>
               <div class="card-body">
                   <p class="card-text text-center">{{ h.name }}</p>

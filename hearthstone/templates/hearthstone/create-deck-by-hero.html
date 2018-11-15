@@ -3,29 +3,87 @@
 {% block content %}
 <div class="row my-5">
   <div class="col-md-12">
-    <h1>Nouveau deck</h1>
+      <style>
 
-    <form method="post">
-      {% csrf_token %}
+          .img-thumbnail {
+            padding: 0 !important;
+            border-radius: unset !important;
+            border: unset !important;
+          }
+
+          .selected img{
+            background-color: white !important;
+          }
+        
+        </style>
+
+    <h1>Contenu du deck</h1>
+    <form method="post" class="form-horizontal form-element">
+
+      <div class="box-body" style="margin-top:50px">
       
-      <div class="form-group">
-        <label for="title">Titre</label>
-        <input type="text" name="title" class="form-control col-md-3" id="title">
-        <button class="btn btn-outline-primary mt-3" type="submit">Creer un nouveau deck</button>
-      </div> 
-      <div class="row">
-          <select multiple="multiple" class="image-picker show-html" name="cards">
-            {% for card in cards %}
-            <div class="col-3 text-center single-card my-4">
-                <option data-img-src="{{ card.img_url }}" class="img-thumbnail" value="{{ card.id }}">
-                  {{ card.card.name }}
-                </option>
-            </div>
-            {% endfor %}
-          </select>
-      </div>
+        {% csrf_token %}
+        
+          <div class="form-group row">
+            <label for="title" class="col-sm-2 control-label">Nom du deck</label>
 
-    </form>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" placeholder="Nom du deck" name="title">
+            </div>
+          </div>
+
+          <p>Nombre de cartes <span id="card_number"></span>/30</p>
+
+          <button class="btn btn-outline-primary mt-3" type="submit" id="btnValidate">Creer un nouveau deck</button>
+        <div class="row">
+            {% for card in cards %}
+              <div class="col-3 text-center single-card my-4 card" style="background-color:transparent">
+                  <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background-color:transparent">
+              </div>
+            {% empty %}
+              <div class="col">
+                Vous n'avez pas encore de cartes.
+              </div>
+            {% endfor %}
+        </div>
+
+      
+      </div>
+    </form>  
   </div>
 </div>
+
+
+<script type="text/javascript">
+  $('#card_number').text($('.card.selected').length);
+  $('.card').on('click', function () {
+    if ($('.card.selected').length >= 30) {
+      alert("vous ne pouvez pas avoir plus de 30 cartes dans un deck");
+      return;
+    }
+    if ($(this).hasClass('selected')) {
+      $(this).removeClass('selected');
+      $(this).next('input').prop('checked', false);
+    } else {
+      $(this).addClass('selected');
+      $(this).next('input').prop('checked', true);
+    }
+    $('#card_number').text($('.card.selected').length);
+
+    if($('#card_number').text() != 30){
+      $('#btnValidate').prop('disabled', true);
+    }
+    else{
+      $('#btnValidate').prop('disabled', false);
+    }
+  })
+
+  $(document).ready(function(){
+    if($('#card_number').text() != 30){
+      $('#btnValidate').prop('disabled', true);
+    }
+  });
+</script>
+
+
 {% endblock content %}

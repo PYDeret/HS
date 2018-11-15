@@ -136,6 +136,19 @@
               </a>
             </li>
 
+            <li>
+                {% if request.user.profile.credit < 100 %}
+                  <a href="{% url 'buyCards' %}" style="pointer-events: none;cursor: default;" >
+                {% else %}
+                  <a href="{% url 'buyCards' %}" >
+                {% endif %}
+                <i class="fa fa-dashboard"></i> <span>Acheter un pack</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-right pull-right"></i>
+                </span>
+              </a>
+            </li>
+
           {% if request.user.is_staff %}
 
             <li>

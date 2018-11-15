@@ -5,6 +5,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: demo
+    volumes:
+       - /var/lib/postgresql/data
   adminer:
       image: adminer
       restart: always

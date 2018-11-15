@@ -1,13 +1,19 @@
 {% extends "hearthstone/base.html" %}
+{% load static %}
+
 
 {% block content %}
 <div class="row my-5">
-  <div class="col-md-12">
-    <h1>Vos decks de cartes</h1>
+  <div class="col-md-12" style="margin-top:50px">
 
-    <a href="{% url 'deckCreate' %}" class="btn btn-primary">Creer un deck</a>
+    <center>
+      <a href="{% url 'deckCreate' %}">
+        <img src="{% static 'images/create_deck.png' %}" style="max-width: 200px;"/>
+      </a>
+    </center>
 
-    <div class="row">
+
+    <div class="row" style="margin-top: 40px;padding:10px">
       {% for deck in decks %}
       <div class="col-3 text-center my-4">
         <a href="{% url 'deck' deck.id %}">{{deck.title}}</a>
