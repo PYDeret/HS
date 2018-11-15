@@ -19,6 +19,11 @@
       <p>Aucune partie pour le moment.</p>
       {% endfor %}
 
+    {% else %}
+
+    {% load static %}
+  
+    <img src="{% static 'images/hs_main.jpg' %}" />
 
     {% endif %}
 
