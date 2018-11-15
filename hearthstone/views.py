@@ -24,9 +24,9 @@ def index(request):
                     Spell.objects.create(
                         name=card.get("name"),
                         playerClass=card.get("playerClass"),
-                        cost=card.get("cost",0),
+                        cost=card.get("cost", 0),
                         img_url=card.get("img", "https://i.imgur.com/U1dkXzQ.png"),
-                        rarity= card.get("rarity","NAN"),
+                        rarity=card.get("rarity","NAN"),
                     )
 
                 elif card["type"] == "Hero":
