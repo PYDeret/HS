@@ -3,7 +3,7 @@
 
 
 {% block content %}
-<div class="row my-5">
+<div class="row my-5" style="padding:30px">
   <div class="col-md-12">
       <style>
 
@@ -14,7 +14,7 @@
           }
 
           .selected img{
-            background-color: lightgrey;
+            background-color: lightgrey !important;
           }
         
         </style>
@@ -25,13 +25,14 @@
     <p>Nombre de cartes <span id="card_number"></span>/30</p>
     <form method="post">
       {% csrf_token %}
-      <div class="row"><input type="submit" class="btn" value="Enregistrer"></div>
+      <input type="submit" class="btn btn-outline-primary mt-3" value="Enregistrer">
       <div class="row">
           {% for card in cards %}
-          <div class="col-3 text-center single-card my-4 card">
-              <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail">
+          <div class="col-3 text-center single-card my-4 card" style="background: transparent;">
+              <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;">
           </div>
         {% empty %}
+        <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
         <div class="col">
           Vous n'avez pas encore de cartes.
         </div>

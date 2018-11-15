@@ -39,7 +39,9 @@
             {% for card in cards %}
               <div class="col-3 text-center single-card my-4 card" style="background-color:transparent">
                   <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background-color:transparent">
-              </div>
+                  
+                </div>
+                <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
             {% empty %}
               <div class="col">
                 Vous n'avez pas encore de cartes.
@@ -70,19 +72,19 @@
     }
     $('#card_number').text($('.card.selected').length);
 
-    if($('#card_number').text() != 30){
+    /*if($('#card_number').text() != 30){
       $('#btnValidate').prop('disabled', true);
     }
     else{
       $('#btnValidate').prop('disabled', false);
-    }
+    }*/
   })
 
-  $(document).ready(function(){
+  /*$(document).ready(function(){
     if($('#card_number').text() != 30){
       $('#btnValidate').prop('disabled', true);
     }
-  });
+  });*/
 </script>
 
 

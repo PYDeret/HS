@@ -1,18 +1,18 @@
 {% extends "hearthstone/base.html" %}
 
 {% block content %}
-<div class="row my-5">
+<div class="row my-5" style="padding:10px">
   <div class="col-md-12">
-    <h1>Deck : {{ deck.title }}</h1>
+    <h1>Nom du deck : {{ deck.title }}</h1>
 
-    <a href="{% url 'deckUpdate' deck.pk %}" class="btn">Editer</a>
-    <a href="{% url 'deckDelete' deck.pk %}" class="btn">Supprimer</a>
+    <a href="{% url 'deckUpdate' deck.pk %}" class="btn btn-outline-primary mt-3">Editer</a>
+    <a href="{% url 'deckDelete' deck.pk %}" class="btn btn-outline-primary mt-3">Supprimer</a>
 
     <h2>Liste des cartes :</h2>
     <div class="row">
         {% for card in cards %}
       <div class="col-3 text-center single-card my-4">
-          <img src="{{ card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail">
+          <img src="{{ card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;border: none;">
       </div>
       {% empty %}
       <div class="col">

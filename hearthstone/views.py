@@ -157,9 +157,9 @@ def createDeckByHero(request, hero_id):
 
     if request.POST:
         title = request.POST.get("title", "")
-        cards = request.POST.getlist("cards", "")
+        cards = request.POST.getlist("cards[]", "")
 
-        cards = list(map(int, cards))
+        #cards = list(map(int, cards))
 
         if len(cards) == 30:
             finished = True;
@@ -171,7 +171,9 @@ def createDeckByHero(request, hero_id):
             finished=finished
         )
 
-        messages.success(request, f'Le deck {title} a bien été créé !')      
+        decksUser = Deck.objects.all().filter(user_id=request.user.id)
+
+        return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
 
     return render(request, 'hearthstone/create-deck-by-hero.html', {'cards': cardsUser})
     
