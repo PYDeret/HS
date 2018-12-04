@@ -21,7 +21,7 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Card(models.Model):
     name = models.TextField(max_length=30, blank=False)
-    playerClass = models.TextField(max_length=50, blank=False)
+    playerClass = models.TextField(max_length=50, blank=False , default="NaN")
     cost = models.IntegerField(default=0)
     img_url = models.TextField(max_length=255, blank=True)
     rarity = models.TextField(max_length=30, blank=True)
@@ -62,6 +62,8 @@ class Spell(Card):
 class UserCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    playerClass = models.TextField(max_length=50, blank=False , default="NaN")
+    cost = models.IntegerField(default=0)
     
 class Party(models.Model):
     attaquant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Attaquant')

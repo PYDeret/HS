@@ -13,9 +13,8 @@
               border: unset !important;
               background-color: transparent !important;
             }
-          
         </style>
-      
+
       {% for card in cards %}
       <div class="col-3 text-center single-card my-4">
           <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail">
@@ -26,7 +25,7 @@
       </div>
       {% endfor %}
     </div>
-  </div>
+  </div>s
 </div>
 
 {% endblock content %}
