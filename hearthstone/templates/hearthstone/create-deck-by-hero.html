@@ -38,8 +38,9 @@
         <div class="row">
             {% for card in cards %}
               <div class="col-3 text-center single-card my-4 card" style="background-color:transparent">
+
                   <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background-color:transparent">
-                  
+
                 </div>
                 <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
             {% empty %}

@@ -135,12 +135,11 @@ def myDecks(request):
 def deck(request, deck_id):
     deck = get_object_or_404(Deck, pk=deck_id)
     
-    idCards = deck.cards
+    #idCards = deck.cards
 
-    cards = Card.objects.filter(id__in=json.loads(idCards))
+    cards = Card.objects.filter(deck = deck_id)
 
     return render(request, 'hearthstone/deck.html', {'cards': cards, 'deck': deck})
-
 
 def createDeck(request):
 
@@ -161,15 +160,21 @@ def createDeckByHero(request, hero_id):
 
         #cards = list(map(int, cards))
 
-        if len(cards) == 30:
-            finished = True;
 
+        if len(cards) == 30:
+                 finished = True;
         newDeck = Deck.objects.create(
             user=request.user,
             title=title,
-            cards=json.dumps(cards),
+            #cards=json.dumps(cards),
             finished=finished
         )
+
+        for card in cards:
+            newDeck.cards.add(card)
+
+
+
 
         decksUser = Deck.objects.all().filter(user_id=request.user.id)
 
@@ -194,7 +199,7 @@ def updateDeck(request, deck_id):
         cards = request.POST.getlist("cards[]", "")
     
         obj = Deck.objects.get(pk= deck_id)
-        obj.cards = json.dumps(cards)
+        obj.cards.set(cards)
         obj.save()
 
         return redirect('deck', deck.pk)
@@ -204,7 +209,7 @@ def updateDeck(request, deck_id):
         idCards = deck.cards
 
         cardsUser = UserCard.objects.filter(user_id=request.user.id)
-        cardsDeck = Card.objects.filter(id__in=json.loads(idCards))
+        cardsDeck = Card.objects.filter(deck = deck_id)
 
         l = [cD.id for cD in cardsDeck]
 
