@@ -3,8 +3,6 @@
 {% block content %}
 <div class="row my-5">
   <div class="col-md-12">
-    <h1>Votre collection de cartes</h1> {{ heroes }}
-    <div class="row">
         <style>
 
             .img-thumbnail {
@@ -13,19 +11,111 @@
               border: unset !important;
               background-color: transparent !important;
             }
+
+            .selected img{
+              background-color: white !important;
+            }
+
         </style>
 
+
+      <h1 style="padding: 10px;">Votre collection de cartes ({{cards.count}})</h1>
+
+
+        <div class="box-body" style="margin-top:50px">
+        {% csrf_token %}
+
+      <!--<p>Prix de vente : <span id="cards_price"> </span>  ( <span id="card_number"></span> cartes selectionnées )</span></p>-->
+
+          <div class="row">
       {% for card in cards %}
-      <div class="col-3 text-center single-card my-4">
-          <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail">
+      <div class="col-3 text-center single-card my-4 card"  data-id="{{card.card.rarity}}" style="background-color:transparent">
+          <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}"  class="img-thumbnail" style="background-color:transparent">
+          <button class="btn btn-outline-primary mt-3"><a href="{% url 'sellCard' card.card.pk card.card.rarity %}" >Vendre</a></button>
       </div>
+      <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
       {% empty %}
       <div class="col">
         Vous n'avez pas encore de cartes.
       </div>
       {% endfor %}
-    </div>
-  </div>s
+      </div>
+        </div>
+
+
+  </div>
 </div>
+
+
+<script type="text/javascript">
+   /* $('#card_number').text($('.card.selected').length);
+    $('#cards_price').text(0);
+    let valueSellCard = 0;
+
+    $('.card').on('click', function () {
+
+        if($(this).data("id") == "Free" || $(this).data("id") == "NAN"){
+
+            alert("Cette carte gratuite n'est pas vendable")
+        }
+        else
+        {
+            selectCard($(this),$(this).data("id"))
+        }
+        $('#cards_price').text(valueSellCard);
+        $('#card_number').text($('.card.selected').length);
+
+        /*if($('#card_number').text() != 30){
+          $('#btnValidate').prop('disabled', true);
+        }
+        else{
+          $('#btnValidate').prop('disabled', false);
+        }*/
+    /*})
+
+
+  /*  function selectCard(card,rarity) {
+
+        if (card.hasClass('selected')) {
+            card.removeClass('selected');
+            card.next('input').prop('checked', false);
+            if(rarity == "Common"){
+                valueSellCard -= 5;
+            }
+            else if(rarity == "Rare"){
+                valueSellCard -= 20;
+            }
+            else if(rarity == "Epic"){
+                valueSellCard -= 100;
+            }
+            else if(rarity == "Legendary"){
+                valueSellCard -= 400;
+            }
+
+        } else {
+            card.addClass('selected');
+            card.next('input').prop('checked', true);
+            if(rarity == "Common"){
+                valueSellCard += 5;
+            }
+            else if(rarity == "Rare"){
+                valueSellCard += 20;
+            }
+            else if(rarity == "Epic"){
+                valueSellCard += 100;
+            }
+            else if(rarity == "Legendary"){
+                valueSellCard += 400;
+            }
+        }
+    }
+
+
+    /*$(document).ready(function(){
+      if($('#card_number').text() != 30){
+        $('#btnValidate').prop('disabled', true);
+      }
+    });*/
+</script>
 
 {% endblock content %}

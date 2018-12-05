@@ -10,6 +10,7 @@ from .forms import UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
+
 def index(request):
     if not Hero.objects.all():
         module_dir = os.path.dirname(__file__)  # get current directory
@@ -112,20 +113,31 @@ def buyCards(request):
 
     return render(request, 'hearthstone/buy-cards.html', {'cards': cards})
 
-def sellCard(request, carduser_id):
-    card = get_object_or_404(CardUser, pk=carduser_id)
-    card.delete()
-    request.user.profile.credit += 10
-    request.user.save()
-    return redirect('myCards')
-
 
 def myCards(request):
     cards = UserCard.objects.filter(user_id=request.user.id)
     #Card.objects.all()
     #UserCard.objects.filter(user_id=request.user.id)
     #UserCard.objects.filter(user_id=request.user.id)
-    return render(request, 'hearthstone/my-cards.html', {'cards': cards})
+    return render(request, 'hearthstone/my-cards.html', {'cards': cards.order_by('cost')})
+
+
+def sellCard(request, card_id, rarity):
+
+    cards = UserCard.objects.filter(card_id = card_id).filter(user_id = request.user.id)
+    cards.delete()
+    if rarity == "Free":
+        request.user.profile.credit += 0
+    elif rarity == "Common":
+        request.user.profile.credit += 5
+    elif rarity == "Rare":
+        request.user.profile.credit += 20
+    elif rarity == "Epic":
+        request.user.profile.credit += 100
+    elif rarity == "Legendary":
+        request.user.profile.credit += 400
+    request.user.save()
+    return redirect('myCards')
 
 
 def myDecks(request):
@@ -181,7 +193,6 @@ def createDeckByHero(request, hero_id):
             newDeck.cards.add(card)
 
         decksUser = Deck.objects.all().filter(user_id=request.user.id)
-
 
         return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
 
