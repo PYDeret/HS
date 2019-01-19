@@ -170,6 +170,9 @@ def createDeckByHero(request, hero_id):
     cardsUser = UserCard.objects.filter(user_id=request.user.id).filter(playerClass=hero.playerClass)
     allCards = cardsUser | cardsNeutral
 
+
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
     finished = False;
 
     if request.POST:
@@ -196,7 +199,7 @@ def createDeckByHero(request, hero_id):
 
         return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
 
-    return render(request, 'hearthstone/create-deck-by-hero.html' , {'cards': allCards.order_by('cost')})
+    return render(request, 'hearthstone/create-deck-by-hero.html' , {'cards': allCards.order_by('cost'), "mana": arr})
 
 
 def deleteDeck(request, deck_id):
@@ -228,4 +231,6 @@ def updateDeck(request, deck_id):
 
         l = [cD.id for cD in cardsDeck]
 
-        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l})
+        arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
+        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l, "mana": arr})

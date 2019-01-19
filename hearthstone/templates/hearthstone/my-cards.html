@@ -3,6 +3,106 @@
 {% block content %}
 <div class="row my-5">
   <div class="col-md-12">
+    <h1>Votre collection de cartes</h1> {{ heroes }}
+
+    <div class="row col-md-6" style="margin: 0 auto;">
+      <style>
+        .hexagon {
+          position: relative;
+          width: 50px; 
+          height: 28.87px;
+          background-color: #3394d0;
+          margin: 14.43px 0;
+          display: inline-block;
+          margin: 0px 3px;
+          margin-top:30px;
+        }
+
+        .hexagon:before,
+        .hexagon:after {
+          content: "";
+          position: absolute;
+          width: 0;
+          border-left: 25px solid transparent;
+          border-right: 25px solid transparent;
+        }
+
+        .hexagon:before {
+          bottom: 100%;
+          border-bottom: 14.43px solid #3394d0;
+        }
+
+        .hexagon:after {
+          top: 100%;
+          width: 0;
+          border-top: 14.43px solid #3394d0;
+        }
+
+        .hexagonClicked {
+          position: relative;
+          width: 50px; 
+          height: 28.87px;
+          background-color: #1a6c9b;
+          margin: 14.43px 0;
+          display: inline-block;
+          margin: 0px 3px;
+          margin-top:30px;
+        }
+
+        .hexagonClicked:before,
+        .hexagonClicked:after {
+          content: "";
+          position: absolute;
+          width: 0;
+          border-left: 25px solid transparent;
+          border-right: 25px solid transparent;
+        }
+
+        .hexagonClicked:before {
+          bottom: 100%;
+          border-bottom: 14.43px solid #1a6c9b;
+        }
+
+        .hexagonClicked:after {
+          top: 100%;
+          width: 0;
+          border-top: 14.43px solid #1a6c9b;
+        }
+
+        .manaTxt{
+          position: absolute;
+          color: white;
+          left: 18px;
+          top: 0px;
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+      
+      </style>
+      <input type="text" id="inputSearch" class="form-control" placeholder="Rechercher une carte">
+
+    </div>
+
+    <div class="row col-md-10" style="margin: 0 auto;">
+
+
+        <div class="hexagon hexagonClicked">
+          <span class="manaTxt"></span>
+        </div>
+
+      {% for i in mana %}
+
+        <div class="hexagon">
+          <span class="manaTxt">{{i}}</span>
+        </div>
+        
+        
+      {% endfor %}
+       
+    </div>
+
+    <div class="row">
         <style>
 
             .img-thumbnail {
@@ -46,76 +146,64 @@
   </div>
 </div>
 
+<script>
 
-<script type="text/javascript">
-   /* $('#card_number').text($('.card.selected').length);
-    $('#cards_price').text(0);
-    let valueSellCard = 0;
+  $("#inputSearch").keyup(function(){
+    let cardName = $('#inputSearch').val();
 
-    $('.card').on('click', function () {
+    if(cardName.length > 0 && cardName !== "" ){
 
-        if($(this).data("id") == "Free" || $(this).data("id") == "NAN"){
+      $("[data-tri]").each(function(){
 
-            alert("Cette carte gratuite n'est pas vendable")
-        }
-        else
-        {
-            selectCard($(this),$(this).data("id"))
-        }
-        $('#cards_price').text(valueSellCard);
-        $('#card_number').text($('.card.selected').length);
+          if (($(this).data("tri")).toLowerCase().indexOf(cardName.toLowerCase()) >= 0){
+            $(this).show();
+          }
+          else{
+            $(this).hide();
+          }
+      });
 
-        /*if($('#card_number').text() != 30){
-          $('#btnValidate').prop('disabled', true);
-        }
-        else{
-          $('#btnValidate').prop('disabled', false);
-        }*/
-    /*})
-
-
-  /*  function selectCard(card,rarity) {
-
-        if (card.hasClass('selected')) {
-            card.removeClass('selected');
-            card.next('input').prop('checked', false);
-            if(rarity == "Common"){
-                valueSellCard -= 5;
-            }
-            else if(rarity == "Rare"){
-                valueSellCard -= 20;
-            }
-            else if(rarity == "Epic"){
-                valueSellCard -= 100;
-            }
-            else if(rarity == "Legendary"){
-                valueSellCard -= 400;
-            }
-
-        } else {
-            card.addClass('selected');
-            card.next('input').prop('checked', true);
-            if(rarity == "Common"){
-                valueSellCard += 5;
-            }
-            else if(rarity == "Rare"){
-                valueSellCard += 20;
-            }
-            else if(rarity == "Epic"){
-                valueSellCard += 100;
-            }
-            else if(rarity == "Legendary"){
-                valueSellCard += 400;
-            }
-        }
+    }
+    else{
+      $("[data-tri]").show();
     }
 
+  });
 
-    /*$(document).ready(function(){
-      if($('#card_number').text() != 30){
-        $('#btnValidate').prop('disabled', true);
-      }
-    });*/
+  $('.hexagon').on('click', function(){
+
+    var thiis = $(this);
+    
+    $('.hexagon').each(function(){
+      $(this).removeClass('hexagonClicked');
+      $(this).addClass('hexagon');
+    });
+
+    thiis.addClass('hexagonClicked');
+
+    var valeurMana = thiis.children('span').text();
+    
+    $("[data-mana]").each(function(){
+
+        if ((($(this).data("mana")).toString() == valeurMana ) && valeurMana != "9+" || valeurMana === ""){
+          $(this).show();
+        }
+        else if(valeurMana == "9+"){
+          if (parseInt($(this).data("mana")) >= 9 ){
+            $(this).show();
+          }
+          else{
+            $(this).hide();
+          }
+        }
+        else{
+          $(this).hide();
+        }
+    });
+
+  });
+
+
 </script>
 
 {% endblock content %}
