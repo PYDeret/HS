@@ -73,3 +73,4 @@ class Party(models.Model):
 
     def __str__(self):
         return self.gagnant.username
+
