@@ -81,7 +81,7 @@ def register(request):
             )
             login(request, new_user)
             for c in Card.objects.filter(rarity="Free"):
-                UserCard.objects.create(user = new_user, card = c)
+                    UserCard.objects.create(user = new_user, card = c, playerClass = c.playerClass, cost = c.cost )
         
             return redirect('home')
     else:
@@ -99,7 +99,7 @@ def buyCards(request):
             random_index = randint(0, cardsCounter - 1)
             card = Card.objects.all()[random_index]
             cards.append(card)
-            userCard = UserCard(user=request.user, card = card)
+            userCard = UserCard(user=request.user, card = card , playerClass = card.playerClass , cost = card.cost)
             userCard.save()
         request.user.profile.credit -= 100
         request.user.save()
@@ -122,8 +122,11 @@ def sellCard(request, carduser_id):
 
 def myCards(request):
     cards = UserCard.objects.filter(user_id=request.user.id)
-
-    return render(request, 'hearthstone/my-cards.html', {'cards': cards})
+    #Card.objects.all()
+    #UserCard.objects.filter(user_id=request.user.id)
+    #UserCard.objects.filter(user_id=request.user.id)
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+    return render(request, 'hearthstone/my-cards.html', {'cards': cards, "mana": arr})
 
 
 def myDecks(request):
@@ -135,12 +138,11 @@ def myDecks(request):
 def deck(request, deck_id):
     deck = get_object_or_404(Deck, pk=deck_id)
     
-    idCards = deck.cards
+    #idCards = deck.cards
 
-    cards = Card.objects.filter(id__in=json.loads(idCards))
+    cards = Card.objects.filter(deck = deck_id)
 
     return render(request, 'hearthstone/deck.html', {'cards': cards, 'deck': deck})
-
 
 def createDeck(request):
 
@@ -151,8 +153,15 @@ def createDeck(request):
 def createDeckByHero(request, hero_id):
 
     hero = Hero.objects.get(pk=hero_id)
-    #cards = Card.objects.filter(playerClass__in=[hero.playerClass, 'Neutral'])
-    cardsUser = UserCard.objects.filter(user_id=request.user.id)
+    #cards = Card.objects.all().filter(playerClass="Druid")  #hero.playerClass
+    #cartes = Card.objects.all().filter(playerClass="Druid")  #hero.playerClass
+    cardsNeutral = UserCard.objects.filter(user_id=request.user.id).filter(playerClass= "Neutral")
+    cardsUser = UserCard.objects.filter(user_id=request.user.id).filter(playerClass=hero.playerClass)
+    allCards = cardsUser | cardsNeutral
+
+
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
     finished = False;
 
     if request.POST:
@@ -161,22 +170,26 @@ def createDeckByHero(request, hero_id):
 
         #cards = list(map(int, cards))
 
+
         if len(cards) == 30:
-            finished = True;
+                 finished = True;
 
         newDeck = Deck.objects.create(
             user=request.user,
             title=title,
-            cards=json.dumps(cards),
+            #cards=json.dumps(cards),
             finished=finished
         )
 
+        for card in cards:
+            newDeck.cards.add(card)
+
         decksUser = Deck.objects.all().filter(user_id=request.user.id)
+
 
         return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
 
-    return render(request, 'hearthstone/create-deck-by-hero.html', {'cards': cardsUser})
-    
+    return render(request, 'hearthstone/create-deck-by-hero.html' , {'cards': allCards.order_by('cost'), "mana": arr})
 
 
 def deleteDeck(request, deck_id):
@@ -194,7 +207,7 @@ def updateDeck(request, deck_id):
         cards = request.POST.getlist("cards[]", "")
     
         obj = Deck.objects.get(pk= deck_id)
-        obj.cards = json.dumps(cards)
+        obj.cards.set(cards)
         obj.save()
 
         return redirect('deck', deck.pk)
@@ -204,8 +217,10 @@ def updateDeck(request, deck_id):
         idCards = deck.cards
 
         cardsUser = UserCard.objects.filter(user_id=request.user.id)
-        cardsDeck = Card.objects.filter(id__in=json.loads(idCards))
+        cardsDeck = Card.objects.filter(deck = deck_id)
 
         l = [cD.id for cD in cardsDeck]
 
-        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l})
+        arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
+        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l, "mana": arr})

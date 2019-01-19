@@ -19,12 +19,22 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
+class Card(models.Model):
+    name = models.TextField(max_length=30, blank=False)
+    playerClass = models.TextField(max_length=50, blank=False , default="NaN")
+    cost = models.IntegerField(default=0)
+    img_url = models.TextField(max_length=255, blank=True)
+    rarity = models.TextField(max_length=30, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Deck(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    cards = models.TextField(blank=True) #use json.dumps(var) to insert cards
+    cards = models.ManyToManyField(Card) #use json.dumps(var) to insert cards
     finished = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.title
@@ -36,15 +46,6 @@ class Hero(models.Model):
     def __str__(self):
         return self.name
 
-class Card(models.Model):
-    name = models.TextField(max_length=30, blank=False)
-    playerClass = models.TextField(max_length=50, blank=False)
-    cost = models.IntegerField(default=0)
-    img_url = models.TextField(max_length=255, blank=True)
-    rarity = models.TextField(max_length=30, blank=True)
-
-    def __str__(self):
-        return self.name
 
 class Minion(Card):
     attack = models.IntegerField()
@@ -61,6 +62,8 @@ class Spell(Card):
 class UserCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    playerClass = models.TextField(max_length=50, blank=False , default="NaN")
+    cost = models.IntegerField(default=0)
     
 class Party(models.Model):
     attaquant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Attaquant')
