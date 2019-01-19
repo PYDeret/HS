@@ -33,6 +33,25 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 
+  <style>
+  
+  .fromMes{
+    background-color: lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 2px;
+    word-wrap: break-word;
+  }
+  
+  .toMes{
+    background-color: #e4d2d2;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 2px;
+    word-wrap: break-word;
+  }
+  </style>
+
 
 </head>
 
@@ -191,7 +210,26 @@
           <img src="{% static 'images/up-chevron-button.png' %}" style="position: relative;top: 5px;width: 15px;" id="chatUp">
         </div>
         <div style="height: 250px;background: white;" id="divChatContent">
-        
+          {% for user in userList %}
+
+            {% if request.user.id !=  user.id %}
+              <div class="userName" data-theirid="{{ user.id }}" style="padding: 2px;">{{ user.username }}</div>
+
+            {% endif %}
+            
+          {% endfor %}
+        </div>
+        <div style="height: 250px;background: white;width:100%;display:none" id="divChatSend">
+          <img src="{% static 'images/close.png' %}" style="position: relative;top: 5px;width: 15px;right: -80px;" id="cloze">
+          <div style="overflow-y: scroll;overflow-x:hidden;height: 180px;position: relative;top: 5px;" id="laOuTxt">
+
+          </div>
+          <div>
+            <textarea id="txtSend" style="position: absolute;bottom: 0;width:100%;right:0;left:0;" onkeypress="process(event, this)"></textarea>
+            <input type="hidden" id="idToSend" />
+            <input type="hidden" id="idSender" value="{{request.user.id}}" />
+          </div>
+          
         </div>
       </div>
 
@@ -200,6 +238,67 @@
 
         $(document).ready(function(){
           $('#divChatContent').hide();
+        });
+
+        $('#cloze').on('click', function(){
+          $('#divChatSend').hide();
+          $('#divChatContent').show();
+        });
+
+        function process(e) {
+          var code = (e.keyCode ? e.keyCode : e.which);
+          if (code == 13) {
+
+            $.ajax({
+                 type:"POST",
+                 url:"/send_mmes/",
+                 data: {
+                        'myId': $('#idSender').val(),
+                        'hisId': $('#idToSend').val(),
+                        'txt': document.getElementById('txtSend').value,
+                        },
+                 success: function(data){
+                     $('#laOuTxt').append('<div class="toMes">'+document.getElementById('txtSend').value+'</div>');
+                     $('#txtSend').val('');
+                 }
+            });
+            return false;
+            
+          }
+        }
+
+        $('.userName').on('click', function(){
+
+          $('#divChatSend').show();
+          $('#divChatContent').hide();
+          $('#idToSend').val($(this).attr('data-theirid'));
+          
+          setInterval(function(){ 
+
+            $('#laOuTxt').html('');  
+            
+            $.ajax({
+                type:"POST",
+                url:"/get_mmes/",
+                data: {
+                      'myId': $('#idSender').val(),
+                      'hisId': $('#idToSend').val(),
+                },
+                success: function(data){
+                    console.log(data)
+                    $.each(data, function(k, v) {
+                        if(v.fields.userFrom != $('#idSender').val()){
+                          var classDisplay = "fromMes";
+                        }
+                        else{
+                          var classDisplay = "toMes";
+                        }
+                        $('#laOuTxt').append('<div class="'+classDisplay+'">'+v.fields.msg+'</div>');
+                    });
+                }
+            });
+
+          }, 3500);
         });
       
         $('#divChat').on('click', function(){
@@ -211,7 +310,7 @@
             $('#chatUp').show();
             $('#chatDown, #divChatContent').hide();
           }
-        })
+        });
       
       </script>
 

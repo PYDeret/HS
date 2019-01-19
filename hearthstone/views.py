@@ -1,14 +1,21 @@
 from django.http import HttpResponse
 import json
 import os
-from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard
+from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard, Chat
 from random import randint
 from pprint import pprint
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.template import loader
 from .forms import UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
+from django.db.models import Q
+
+
+
 
 
 def index(request):
@@ -62,9 +69,29 @@ def home(request):
         'title': title,
         'parties': Party.objects.all(),
         'Hero': Hero.objects.all(),
+        'userList': User.objects.values()
     }
     return render(request, 'hearthstone/index.html', context)
 
+@csrf_exempt
+def send_mmes(request):
+    if request.is_ajax():
+        myId = User.objects.get(id=request.POST['myId'])
+        hisId = User.objects.get(id=request.POST['hisId'])
+        message = request.POST['txt']
+
+        send = Chat(msg=message, userFrom = myId , userTo = hisId)
+        send.save()
+ 
+    return HttpResponse(message)
+
+@csrf_exempt
+def get_mmes(request):
+    myId = User.objects.get(id=request.POST['myId'])
+    hisId = User.objects.get(id=request.POST['hisId'])
+    messageList = Chat.objects.filter(Q(userTo=myId) | Q(userFrom=myId)).filter(Q(userTo=hisId) | Q(userFrom=hisId))
+    messageList_json = serializers.serialize('json', messageList)
+    return HttpResponse(messageList_json, content_type='application/json')
 
 def register(request):
     if request.user.is_authenticated:

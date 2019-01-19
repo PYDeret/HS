@@ -4,7 +4,11 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-#Initiating user-profile with 200 CDTS
+class Chat(models.Model):
+    msg = models.TextField(max_length=255, blank=False)
+    userFrom = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userFrom_id') # Field name made lowercase.
+    userTo = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userTo_id')  # Field name made lowercase.
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credit = models.IntegerField(default=200)
@@ -45,7 +49,7 @@ class Hero(models.Model):
 
     def __str__(self):
         return self.name
-
+        
 
 class Minion(Card):
     attack = models.IntegerField()

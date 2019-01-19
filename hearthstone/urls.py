@@ -19,4 +19,6 @@ urlpatterns = [
     path('deck/update/<int:deck_id>', views.updateDeck, name='deckUpdate'),
     path('deck/create', views.createDeck, name='deckCreate'),
     path('deck/create/<int:hero_id>', views.createDeckByHero, name='createDeckByHero'),
+    path('send_mmes/', views.send_mmes, name='sendMes'),
+    path('get_mmes/', views.get_mmes, name='getMes'),
 ]
