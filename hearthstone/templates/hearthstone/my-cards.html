@@ -112,22 +112,38 @@
               background-color: transparent !important;
             }
 
+            .selected img{
+              background-color: white !important;
+            }
+
         </style>
 
 
+      <h1 style="padding: 10px;">Votre collection de cartes ({{cards.count}})</h1>
+
+
+        <div class="box-body" style="margin-top:50px">
+        {% csrf_token %}
+
+      <!--<p>Prix de vente : <span id="cards_price"> </span>  ( <span id="card_number"></span> cartes selectionnées )</span></p>-->
+
+          <div class="row">
       {% for card in cards %}
-
-        <div class="col-3 text-center single-card my-4" data-tri="{{ card.card.name }}" data-mana="{{card.cost}}">
-            <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" >
-        </div>
-
+      <div class="col-3 text-center single-card my-4 card"  data-id="{{card.card.rarity}}" style="background-color:transparent">
+          <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}"  class="img-thumbnail" style="background-color:transparent">
+          <button class="btn btn-outline-primary mt-3"><a href="{% url 'sellCard' card.card.pk card.card.rarity %}" >Vendre</a></button>
+      </div>
+      <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
       {% empty %}
       <div class="col">
         Vous n'avez pas encore de cartes.
       </div>
       {% endfor %}
-    </div>
-  </div>s
+      </div>
+        </div>
+
+
+  </div>
 </div>
 
 <script>
