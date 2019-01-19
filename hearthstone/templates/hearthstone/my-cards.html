@@ -129,7 +129,7 @@
 
           <div class="row">
       {% for card in cards %}
-      <div class="col-3 text-center single-card my-4 card"  data-id="{{card.card.rarity}}" style="background-color:transparent">
+      <div class="col-3 text-center single-card my-4 card"  data-id="{{card.card.rarity}}" style="background-color:transparent" data-tri="{{ card.card.name }}" data-mana="{{card.cost}}">
           <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}"  class="img-thumbnail" style="background-color:transparent">
           <button class="btn btn-outline-primary mt-3"><a href="{% url 'sellCard' card.card.pk card.card.rarity %}" >Vendre</a></button>
       </div>

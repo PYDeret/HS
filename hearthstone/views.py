@@ -119,7 +119,8 @@ def myCards(request):
     #Card.objects.all()
     #UserCard.objects.filter(user_id=request.user.id)
     #UserCard.objects.filter(user_id=request.user.id)
-    return render(request, 'hearthstone/my-cards.html', {'cards': cards.order_by('cost')})
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+    return render(request, 'hearthstone/my-cards.html', {'cards': cards.order_by('cost'), 'mana': arr})
 
 
 def sellCard(request, card_id, rarity):
