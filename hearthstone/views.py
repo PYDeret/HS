@@ -108,6 +108,31 @@ def change_troc(request):
 
     return HttpResponse(message, content_type='application/json')
     
+def getTrocCards(request, user_id):
+    cardsTroc = UserCard.objects.filter(user_id=user_id).filter(troc=1).select_related("card")
+    user = User.objects.get(id=user_id)
+
+    return render(request, 'hearthstone/troc.html', {'cards': cardsTroc, 'user': user})
+
+def trocChooseCard(request, usercard_id):
+    cardsTroc = UserCard.objects.filter(user_id=request.user.id).filter(troc=1).select_related("card")
+    return render(request, 'hearthstone/troc_choose.html', {'cards': cardsTroc, 'usercard_id': usercard_id})
+
+def trocValidate(request, usercard_id, myusercard_id):
+
+    card1 = UserCard.objects.get(id=usercard_id)
+    lastid = card1.user_id
+    card1.user_id = request.user.id
+    card1.troc = 0
+    card1.save()
+
+
+    card2 = UserCard.objects.get(id=myusercard_id)
+    card2.user_id = lastid
+    card2.troc = 0
+    card2.save()
+
+    return redirect('check')
 
 def register(request):
     if request.user.is_authenticated:

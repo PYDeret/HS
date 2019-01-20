@@ -30,7 +30,9 @@ urlpatterns = [
     path('check/player/deck/<int:user_id>', views.checkPlayerDecks, name='checkPlayerDecks'),
     path('check/player/cards/<int:user_id>', views.checkPlayerCards, name='checkPlayerCards'),
     path('check/player/deck/cards/<int:user_id>/<int:deck_id>', views.checkPlayerDeckCards, name='checkPlayerDeckCards'),
-
+    path('check/player/troc/<int:user_id>', views.getTrocCards, name='getTrocCards'),
+    path('check/player/troc/choosecard/<int:usercard_id>', views.trocChooseCard, name='trocChooseCard'),
+    path('check/player/troc/validate/<int:usercard_id>/<int:myusercard_id>', views.trocValidate, name='trocValidate'),
 ]
 
 

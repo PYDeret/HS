@@ -7,16 +7,25 @@
 
     <div class="row">
       {% for user in userList %}
-      <div class="col-3 text-center single-card my-4">
-        <img src="{{ '/hearthstone/static/images/merly.png' }}" alt="user">
-        <span style="font-size:19px">{{user.username}}</span>
-        <div>
-            <a href="{% url 'checkPlayerCards' user.id %}">Voir les cartes</a>
+
+
+        {% if user.id != request.user.id %}
+
+        <div class="col-3 text-center single-card my-4">
+          <img src="{{ '/hearthstone/static/images/merly.png' }}" alt="user">
+          <span style="font-size:19px">{{user.username}}</span>
+          <div>
+              <a href="{% url 'checkPlayerCards' user.id %}">Voir les cartes</a>
+          </div>
+          <div>
+              <a href="{% url 'checkPlayerDecks' user.id %}">Voir les decks</a>
+          </div>
+          <div>
+              <a href="{% url 'getTrocCards' user.id %}">Voir les cartes en troc</a>
+          </div>
         </div>
-        <div>
-            <a href="{% url 'checkPlayerDecks' user.id %}">Voir les decks</a>
-        </div>
-      </div>
+
+        {% endif %}  
       {% endfor %}
     </div>
   </div>
