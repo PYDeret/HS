@@ -126,6 +126,7 @@ def party(request):
     return render(request, 'hearthstone/party.html')
 
 def buyCards(request):
+    userList = User.objects.values()
     cardsCounter = Card.objects.all().count()
     cards = []
     if request.user.is_authenticated and request.user.profile.credit >= 100:
@@ -144,16 +145,17 @@ def buyCards(request):
         messages.warning(request, f'Vous devez être connecté pour accéder à cette page')
         return redirect('home')
 
-    return render(request, 'hearthstone/buy-cards.html', {'cards': cards})
+    return render(request, 'hearthstone/buy-cards.html', {'cards': cards, 'userList': userList})
 
 
 def myCards(request):
+    userList = User.objects.values()
     cards = UserCard.objects.filter(user_id=request.user.id)
     #Card.objects.all()
     #UserCard.objects.filter(user_id=request.user.id)
     #UserCard.objects.filter(user_id=request.user.id)
     arr = [0,1,2,3,4,5,6,7,8,"9+"]
-    return render(request, 'hearthstone/my-cards.html', {'cards': cards.order_by('cost'), 'mana': arr})
+    return render(request, 'hearthstone/my-cards.html', {'cards': cards.order_by('cost'), 'mana': arr, 'userList': userList})
 
 
 def sellCard(request, card_id, rarity):
@@ -176,27 +178,31 @@ def sellCard(request, card_id, rarity):
 
 def myDecks(request):
     decksUser = Deck.objects.all().filter(user_id=request.user.id)
+    userList = User.objects.values()
 
-    return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
+    return render(request, 'hearthstone/my-decks.html', {'decks': decksUser, 'userList': userList})
 
 
 def deck(request, deck_id):
     deck = get_object_or_404(Deck, pk=deck_id)
+    userList = User.objects.values()
     
     #idCards = deck.cards
 
     cards = Card.objects.filter(deck = deck_id)
 
-    return render(request, 'hearthstone/deck.html', {'cards': cards, 'deck': deck})
+    return render(request, 'hearthstone/deck.html', {'cards': cards, 'deck': deck, 'userList': userList})
 
 def createDeck(request):
 
     heros = Hero.objects.all()
+    userList = User.objects.values()
 
-    return render(request, 'hearthstone/create-deck.html', {'heros': heros})
+    return render(request, 'hearthstone/create-deck.html', {'heros': heros, 'userList': userList})
 
 def createDeckByHero(request, hero_id):
 
+    userList = User.objects.values()
     hero = Hero.objects.get(pk=hero_id)
     #cards = Card.objects.all().filter(playerClass="Druid")  #hero.playerClass
     #cartes = Card.objects.all().filter(playerClass="Druid")  #hero.playerClass
@@ -233,7 +239,7 @@ def createDeckByHero(request, hero_id):
 
         return render(request, 'hearthstone/my-decks.html', {'decks': decksUser})
 
-    return render(request, 'hearthstone/create-deck-by-hero.html' , {'cards': allCards.order_by('cost'), "mana": arr})
+    return render(request, 'hearthstone/create-deck-by-hero.html' , {'cards': allCards.order_by('cost'), "mana": arr, 'userList': userList})
 
 
 def deleteDeck(request, deck_id):
@@ -259,6 +265,7 @@ def updateDeck(request, deck_id):
         deck = get_object_or_404(Deck, pk=deck_id)
     
         idCards = deck.cards
+        userList = User.objects.values()
 
         cardsUser = UserCard.objects.filter(user_id=request.user.id)
         cardsDeck = Card.objects.filter(deck = deck_id)
@@ -267,7 +274,7 @@ def updateDeck(request, deck_id):
 
         arr = [0,1,2,3,4,5,6,7,8,"9+"]
 
-        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l, "mana": arr})
+        return render(request, 'hearthstone/update-deck.html', {'cards': cardsUser, 'deck': deck, 'cardsUsed' : cardsDeck, 'l' : l, "mana": arr, 'userList': userList})
 
 
 
@@ -287,24 +294,27 @@ def forum(request):
     """Listing of topics in a forum."""
     topics = Topic.objects.all()
     topics = mk_paginator(request, topics, DJANGO_SIMPLE_FORUM_TOPICS_PER_PAGE)
+    userList = User.objects.values()
 
     if not Forum.objects.all():
         forum = Forum(title="HS Forum", description = "Let's talk !" , creator = request.user)
         forum.save()
 
-    return render(request, 'django_simple_forum/forum.html', {'topics': topics, 'user': request.user, 'pk': 1})
+    return render(request, 'django_simple_forum/forum.html', {'topics': topics, 'user': request.user, 'pk': 1, 'userList': userList})
 
 def topic(request, topic_id):
     """Listing of posts in a topic."""
     posts = Post.objects.filter(topic=topic_id).order_by("created")
     posts = mk_paginator(request, posts, DJANGO_SIMPLE_FORUM_REPLIES_PER_PAGE)
     topic = Topic.objects.get(pk=topic_id)
+    userList = User.objects.values()
 
-    return render(request, 'django_simple_forum/topic.html', {'posts': posts, 'user': request.user, 'pk': topic_id, 'topic':topic})
+    return render(request, 'django_simple_forum/topic.html', {'posts': posts, 'user': request.user, 'pk': topic_id, 'topic':topic, 'userList': userList})
 
 def post_reply(request, topic_id):
     form = PostForm()
     topic = Topic.objects.get(pk=topic_id)
+    userList = User.objects.values()
     
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -321,12 +331,13 @@ def post_reply(request, topic_id):
 
             return redirect('forum-detail')
 
-    return render(request, 'django_simple_forum/reply.html', {'form': form, 'user': request.user, 'topic': topic})
+    return render(request, 'django_simple_forum/reply.html', {'form': form, 'user': request.user, 'topic': topic, 'userList': userList})
 
 
 def new_topic(request, forum_id):
     form = TopicForm()
     forum = Forum.objects.get(pk=forum_id)
+    userList = User.objects.values()
     
     if request.method == 'POST':
         form = TopicForm(request.POST)
@@ -341,4 +352,4 @@ def new_topic(request, forum_id):
             topic.save()
             return redirect('forum-detail')
 
-    return render(request, 'django_simple_forum/new-topic.html', {'form': form, 'user': request.user})
+    return render(request, 'django_simple_forum/new-topic.html', {'form': form, 'user': request.user, 'userList': userList})
