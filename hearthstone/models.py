@@ -71,6 +71,7 @@ class UserCard(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     playerClass = models.TextField(max_length=50, blank=False , default="NaN")
     cost = models.IntegerField(default=0)
+    troc = models.IntegerField(default=0)
     
 class Party(models.Model):
     attaquant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Attaquant')

@@ -87,6 +87,7 @@ class Migration(migrations.Migration):
             name='UserCard',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('troc', models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(

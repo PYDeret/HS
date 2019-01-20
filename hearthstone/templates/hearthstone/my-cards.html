@@ -132,6 +132,17 @@
       <div class="col-3 text-center single-card my-4 card"  data-id="{{card.card.rarity}}" style="background-color:transparent" data-tri="{{ card.card.name }}" data-mana="{{card.cost}}">
           <img src="{{ card.card.img_url }}" alt="{{ card.card.name }}"  class="img-thumbnail" style="background-color:transparent">
           <button class="btn btn-outline-primary mt-3"><a href="{% url 'sellCard' card.card.pk card.card.rarity %}" >Vendre</a></button>
+          <button class="btn btn-outline-primary mt-3">
+            <a onclick="return false;" name="setTroc">
+              {% if card.troc == 0 %}
+              <span style="color: #455a64;">Mettre en troc</span>
+              {% else %}
+              <span style="color: #455a64;">Retirer du troc</span>
+              {% endif %}
+              <input type="hidden" value="{{ card.id }}" name="idCarte"/>
+              <input type="hidden" value="{{ card.troc }}" name="trocCarte"/>
+            </a>
+          </button>
       </div>
       <input type="checkbox" name="cards[]" value="{{ card.card.id }}">
       {% empty %}
@@ -147,6 +158,41 @@
 </div>
 
 <script>
+
+  $('a[name=setTroc]').on('click', function(){
+
+    var trocVal = $(this).children('input')[1];
+    var txtTroc = $(this).children('span');
+    var idCarte = parseInt($($(this).children('input')[0]).val());
+    var trocCarte = parseInt($($(this).children('input')[1]).val());
+
+    console.log(idCarte);
+    console.log(trocCarte);
+
+    if(trocCarte == 1){
+      var newVal = 0;
+      var newTxt = "Mettre en troc";
+    }
+    else{
+      var newVal = 1;
+      var newTxt = "Retirer du troc";
+    }
+
+    $.ajax({
+      method:"POST",
+      url:"/change_troc/",
+      data: {
+            'idCard': idCarte,
+            'value': newVal,
+      },
+    })
+    .done(function( msg ) {
+      console.log("done");
+      $(trocVal).val(newVal);
+      $(txtTroc).text(newTxt);
+    });
+
+  });
 
   $("#inputSearch").keyup(function(){
     let cardName = $('#inputSearch').val();

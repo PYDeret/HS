@@ -99,6 +99,16 @@ def get_mmes(request):
     messageList_json = serializers.serialize('json', messageList)
     return HttpResponse(messageList_json, content_type='application/json')
 
+@csrf_exempt
+def change_troc(request):
+    card = UserCard.objects.get(id=request.POST['idCard'])
+    card.troc = request.POST['value']
+    card.save()
+    message = request.POST['value']
+
+    return HttpResponse(message, content_type='application/json')
+    
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')

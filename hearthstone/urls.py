@@ -21,6 +21,7 @@ urlpatterns = [
     path('deck/create/<int:hero_id>', views.createDeckByHero, name='createDeckByHero'),
     path('send_mmes/', views.send_mmes, name='sendMes'),
     path('get_mmes/', views.get_mmes, name='getMes'),
+    path('change_troc/', views.change_troc, name='changeTroc'),
     path('forum/', views.forum, name='forum-detail'),
     url(r'^topic/(\d+)/$', views.topic, name='topic-detail'),
     url(r'^reply/(\d+)/$', views.post_reply, name='reply'),
