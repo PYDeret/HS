@@ -175,6 +175,34 @@ def sellCard(request, card_id, rarity):
     request.user.save()
     return redirect('myCards')
 
+def check(request):
+    userList = User.objects.values()
+    return render(request, 'hearthstone/check.html', {'userList': userList})
+
+def checkPlayerCards(request, user_id):
+    userList = User.objects.values()
+    theUser = get_object_or_404(User, pk=user_id)
+
+    cards = UserCard.objects.filter(user_id=user_id)
+
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
+    return render(request, 'hearthstone/check_player_cards.html', {'cards': cards, 'theUser': theUser, 'userList': userList, "mana": arr})
+
+def checkPlayerDeckCards(request, user_id, deck_id):
+    userList = User.objects.values()
+    theUser = get_object_or_404(User, pk=user_id)
+    cards = Card.objects.filter(deck = deck_id)
+    deck = get_object_or_404(Deck, pk=deck_id)
+    arr = [0,1,2,3,4,5,6,7,8,"9+"]
+
+    return render(request, 'hearthstone/check_player_deck_cards.html', {'userList': userList, 'theUser': theUser, 'cards': cards, "mana": arr, 'deck': deck})
+
+def checkPlayerDecks(request, user_id):
+    userList = User.objects.values()
+    theUser = get_object_or_404(User, pk=user_id)
+    decksUser = Deck.objects.all().filter(user_id=user_id)
+    return render(request, 'hearthstone/check_player_decks.html', {'userList': userList, 'theUser': theUser, 'decks': decksUser})
 
 def myDecks(request):
     decksUser = Deck.objects.all().filter(user_id=request.user.id)

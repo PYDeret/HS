@@ -1,0 +1,26 @@
+{% extends "hearthstone/base.html" %}
+
+{% block content %}
+<div class="row my-5" style="padding:10px">
+  <div class="col-md-12">
+    <h1>Nom du deck : {{ deck.title }}</h1>
+
+
+    <h2>Liste des cartes :</h2>
+    <div class="row">
+        {% for card in cards %}
+      <div class="col-3 text-center single-card my-4">
+
+          <img src="{{ card.img_url }}" alt="{{ card.card.name }}" class="img-thumbnail" style="background: transparent;border: none;">
+
+      </div>
+      {% empty %}
+      <div class="col">
+        Vous n'avez pas encore de cartes.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -25,6 +25,11 @@ urlpatterns = [
     url(r'^topic/(\d+)/$', views.topic, name='topic-detail'),
     url(r'^reply/(\d+)/$', views.post_reply, name='reply'),
     url(r'newtopic/(\d+)/$', views.new_topic, name='new-topic'),
+    path('check/', views.check, name='check'),
+    path('check/player/deck/<int:user_id>', views.checkPlayerDecks, name='checkPlayerDecks'),
+    path('check/player/cards/<int:user_id>', views.checkPlayerCards, name='checkPlayerCards'),
+    path('check/player/deck/cards/<int:user_id>/<int:deck_id>', views.checkPlayerDeckCards, name='checkPlayerDeckCards'),
+
 ]
 
 

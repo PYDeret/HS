@@ -166,6 +166,15 @@
                 </span>
               </a>
             </li>
+
+            <li>
+              <a href="{% url 'check' %}">
+                <i class="fa fa-dashboard"></i> <span>Voir les autres joueurs</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-right pull-right"></i>
+                </span>
+              </a>
+            </li>
           
           {% if request.user.is_staff %}
 
