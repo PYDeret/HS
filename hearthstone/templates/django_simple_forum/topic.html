@@ -1,12 +1,26 @@
+{% extends "hearthstone/base.html" %}
+
+
+<!-- Threads  -->
+
+{% block content %}
+<div class="row my-5">
+  <div class="col-md-12">
+    
+
+
+
 <!-- Posts  -->
-<div class="ttitle">{{ topic.title }}</div>
+<div class="ttitle" style="width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 20px;">Topic : {{ topic.title }}</div>
 <div id="list">
 
     {% for post in posts.object_list %}
-        <div class="post">
-            <span class="title">{{ post.title }}</span><br />
-            by {{ post.creator }} | <span class="date">{{ post.created }}</span> <br /><br />
-            {{ post.body }} <br />
+        <div class="post" style="padding:15px">
+            <div>{{ post.body }}</div>
+            by {{ post.creator }} | <span class="date">{{ post.created }}</span>    
         </div>
     {% endfor %}
 </div>
@@ -29,4 +43,9 @@
     </span>
 </div>
 {% endif %}
-<a class="button" href="{% url 'reply' pk %}">Reply</a>
+<a class="btn btn-outline-primary mt-3" href="{% url 'reply' pk %}">Répondre</a>
+
+ </div>
+</div>
+
+{% endblock content %}

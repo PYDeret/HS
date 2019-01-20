@@ -1,15 +1,23 @@
+{% extends "hearthstone/base.html" %}
 <!-- Threads  -->
-<a id="new_topic" class="button" href="{% url 'new-topic' pk %}">Start New Topic</a>
+
+{% block content %}
+<div class="row my-5">
+  <div class="col-md-12">
+    
+ 
+
+
+<a id="new_topic" class="btn btn-outline-primary mt-3" href="{% url 'new-topic' pk %}">Créer un nouveau topic</a>
 <br />
 <br />
 
 <div id="list">
-<table border="0" cellpadding="4" width="100%">
+<table border="0" width="100%" class="table table-striped">
     <tr>
-        <td>Topics</td>
-        <td>Replies</td>
-        <td>Last post</td>
-        <td></td>
+        <td>Topic</td>
+        <td>Réponses</td>
+        <td>Dernière réponse</td>
     </tr>
 
     {% for topic in topics.object_list %}
@@ -20,9 +28,6 @@
         <td {% if forloop.last %}class="last"{% endif %}>{{ topic.num_replies }}</td>
         <td {% if forloop.last %}class="last"{% endif %}>
             {{ topic.last_post.short|linebreaksbr }}</td>
-        <td {% if forloop.last %}class="last"{% endif %}>
-            <a class="button" href="{% url 'topic-detail' topic.id %}">VIEW</a>
-        </td>
     </tr>
 
     {% endfor %}
@@ -47,3 +52,8 @@
     </span>
 </div>
 {% endif %}
+
+ </div>
+</div>
+
+{% endblock content %}
