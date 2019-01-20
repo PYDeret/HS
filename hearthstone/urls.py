@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -21,4 +21,11 @@ urlpatterns = [
     path('deck/create/<int:hero_id>', views.createDeckByHero, name='createDeckByHero'),
     path('send_mmes/', views.send_mmes, name='sendMes'),
     path('get_mmes/', views.get_mmes, name='getMes'),
+    url('toforum/', views.toforum, name='forum-index'),
+    url(r'^(\d+)/$', views.forum, name='forum-detail'),
+    url(r'^topic/(\d+)/$', views.topic, name='topic-detail'),
+    url(r'^reply/(\d+)/$', views.post_reply, name='reply'),
+    url(r'newtopic/(\d+)/$', views.new_topic, name='new-topic'),
 ]
+
+
