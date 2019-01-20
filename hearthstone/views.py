@@ -271,19 +271,6 @@ def updateDeck(request, deck_id):
 
 
 
-def toforum(request):
-    """Main listing."""
-    forums = Forum.objects.all()
-    return render_to_response("django_simple_forum/list.html", {'forums': forums, 
-                                'user': request.user}, 
-                                context_instance=RequestContext(request))
-
-
-def add_csrf(request, ** kwargs):
-    d = dict(user=request.user, ** kwargs)
-    d.update(csrf(request))
-    return d
-
 def mk_paginator(request, items, num_items):
     """Create and return a paginator."""
     paginator = Paginator(items, num_items)
@@ -296,23 +283,24 @@ def mk_paginator(request, items, num_items):
         items = paginator.page(paginator.num_pages)
     return items
 
-def forum(request, forum_id):
+def forum(request):
     """Listing of topics in a forum."""
-    topics = Topic.objects.filter(forum=forum_id).order_by("-created")
+    topics = Topic.objects.all()
     topics = mk_paginator(request, topics, DJANGO_SIMPLE_FORUM_TOPICS_PER_PAGE)
 
-    forum = get_object_or_404(Forum, pk=forum_id)
+    if not Forum.objects.all():
+        forum = Forum(title="HS Forum", description = "Let's talk !" , creator = request.user)
+        forum.save()
 
-    return render_to_response("django_simple_forum/forum.html", add_csrf(request, topics=topics, pk=forum_id, forum=forum),
-                              context_instance=RequestContext(request))
+    return render(request, 'django_simple_forum/forum.html', {'topics': topics, 'user': request.user, 'pk': 1})
 
 def topic(request, topic_id):
     """Listing of posts in a topic."""
     posts = Post.objects.filter(topic=topic_id).order_by("created")
     posts = mk_paginator(request, posts, DJANGO_SIMPLE_FORUM_REPLIES_PER_PAGE)
     topic = Topic.objects.get(pk=topic_id)
-    return render_to_response("django_simple_forum/topic.html", add_csrf(request, posts=posts, pk=topic_id,
-        topic=topic), context_instance=RequestContext(request))
+
+    return render(request, 'django_simple_forum/topic.html', {'posts': posts, 'user': request.user, 'pk': topic_id, 'topic':topic})
 
 def post_reply(request, topic_id):
     form = PostForm()
@@ -328,20 +316,17 @@ def post_reply(request, topic_id):
             post.title = form.cleaned_data['title']
             post.body = form.cleaned_data['body']
             post.creator = request.user
-            post.user_ip = request.META['REMOTE_ADDR']
 
             post.save()
 
-            return HttpResponseRedirect(reverse('topic-detail', args=(topic.id, )))
+            return redirect('forum-detail')
 
-    return render_to_response('django_simple_forum/reply.html', {
-            'form': form,
-            'topic': topic,
-        }, context_instance=RequestContext(request))
+    return render(request, 'django_simple_forum/reply.html', {'form': form, 'user': request.user, 'topic': topic})
+
 
 def new_topic(request, forum_id):
     form = TopicForm()
-    forum = get_object_or_404(Forum, pk=forum_id)
+    forum = Forum.objects.get(pk=forum_id)
     
     if request.method == 'POST':
         form = TopicForm(request.POST)
@@ -353,12 +338,7 @@ def new_topic(request, forum_id):
             topic.description = form.cleaned_data['description']
             topic.forum = forum
             topic.creator = request.user
-
             topic.save()
+            return redirect('forum-detail')
 
-            return HttpResponseRedirect(reverse('forum-detail', args=(forum_id, )))
-
-    return render_to_response('django_simple_forum/new-topic.html', {
-            'form': form,
-            'forum': forum,
-        }, context_instance=RequestContext(request))
+    return render(request, 'django_simple_forum/new-topic.html', {'form': form, 'user': request.user})

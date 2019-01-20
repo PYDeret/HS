@@ -1,5 +1,3 @@
-{% load url from future %}
-
 <!-- Threads  -->
 <a id="new_topic" class="button" href="{% url 'new-topic' pk %}">Start New Topic</a>
 <br />
@@ -17,13 +15,13 @@
     {% for topic in topics.object_list %}
     <tr>
         <td {% if forloop.last %}class="last"{% endif %}>
-        <div class="title"> <a href="{% url 'topic-detail' topic.pk %}">{{ topic.title }}</a>
+        <div class="title"> <a href="{% url 'topic-detail' topic.id %}">{{ topic.title }}</a>
             </div></td>
         <td {% if forloop.last %}class="last"{% endif %}>{{ topic.num_replies }}</td>
         <td {% if forloop.last %}class="last"{% endif %}>
             {{ topic.last_post.short|linebreaksbr }}</td>
         <td {% if forloop.last %}class="last"{% endif %}>
-            <a class="button" href="{% url 'topic-detail' topic.pk %}">VIEW</a>
+            <a class="button" href="{% url 'topic-detail' topic.id %}">VIEW</a>
         </td>
     </tr>
 

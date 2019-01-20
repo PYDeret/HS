@@ -133,8 +133,7 @@ class Post(models.Model):
     creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     updated = models.DateTimeField(auto_now=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    body = models.TextField(max_length=10000)
-    user_ip = models.GenericIPAddressField(blank=True, null=True)
+    body = models.TextField(max_length=255)
 
     def __unicode__(self):
         return u"%s - %s - %s" % (self.creator, self.topic, self.title)

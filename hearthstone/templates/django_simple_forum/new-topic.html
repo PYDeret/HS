@@ -1,6 +1,4 @@
-{% load url from future %}
-
-<form action="{% url 'new-topic' forum.id %}" method="POST">
+<form action="{% url 'new-topic' 1 %}" method="POST">
     {% csrf_token %} 
     {{ form.as_p }}
     <input type="submit" value="Submit" />
