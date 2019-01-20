@@ -158,6 +158,15 @@
               </a>
             </li>
 
+            <li>
+              <a href="{% url 'forum-index' %}">
+                <i class="fa fa-dashboard"></i> <span>Forum</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-right pull-right"></i>
+                </span>
+              </a>
+            </li>
+          
           {% if request.user.is_staff %}
 
             <li>
