@@ -1,6 +1,15 @@
 {% extends "hearthstone/base.html" %}
 
 {% block content %}
+<style>
+.floow{
+  color:blue;
+}
+
+.unfloow{
+  color:red;
+}
+</style>
 <div class="row my-5">
   <div class="col-md-12">
     <h1>Voir les autres joueurs</h1>
@@ -12,6 +21,7 @@
         {% if user.id != request.user.id %}
 
         <div class="col-3 text-center single-card my-4">
+          <input type="hidden" class="idmk" value="{{user.id}}" />
           <img src="{{ '/hearthstone/static/images/merly.png' }}" alt="user">
           <span style="font-size:19px">{{user.username}}</span>
           <div>
@@ -23,11 +33,101 @@
           <div>
               <a href="{% url 'getTrocCards' user.id %}">Voir les cartes en troc</a>
           </div>
+  
         </div>
 
         {% endif %}  
       {% endfor %}
+
+      <input type="hidden" id="mnid" value="{{request.user.id}}" />
+
     </div>
+    <script>
+
+        $(document).ready(function(){
+
+            $('.single-card').each(function(k,v){
+
+              var idmk = parseInt($(this).children('input').val());
+              var thiis = $(this);
+              var mnid = parseInt($('#mnid').val());
+
+              $.ajax({
+                type:"POST",
+                url:"/get_follow/",
+                data: {
+                      'hisId': idmk,
+                      'myId': mnid,
+                },
+                success: function(data){
+
+                    if(data[0].fields.value == 1){
+                      thiis.append(
+                        '<div class="followDiv">'+
+                          '<a href=""  class="afollow" onclick="return false;">'+
+                            '<span class="unfloow">Unfollow</span>'+
+                            '<input type="hidden" value="'+idmk+'"/>'+
+                            '<input type="hidden" value="0"/>'+
+                          '</a>'+
+                        '</div>'
+                      );
+                    }
+                    else{
+                      thiis.append(
+                        '<div class="followDiv">'+
+                          '<a href=""  class="afollow" onclick="return false;">'+
+                            '<span class="floow">Follow</span>'+
+                            '<input type="hidden" value="'+idmk+'"/>'+
+                            '<input type="hidden" value="1"/>'+
+                          '</a>'+
+                        '</div>'
+                      );
+                    }
+                }
+              });
+
+
+            });
+        });
+
+        $( window ).on("load", function() {
+          $('.afollow').on('click', function(){
+
+            mnid = parseInt($('#mnid').val());
+            idUsr = parseInt($($(this).children("input")[0]).val())
+            val = parseInt($($(this).children("input")[1]).val());
+            thiis = $(this);
+
+            $.ajax({
+                  type:"POST",
+                  url:"/follow/",
+                  data: {
+                        'idUser': idUsr,
+                        'mnid': mnid,
+                        'value': val
+                        },
+                  success: function(data){
+
+                      if(data == 0){
+                        thiis.children('span').html('Follow');
+                        thiis.children('span').addClass('floow');
+                        thiis.children('span').removeClass('unfloow');
+                        $(thiis.children('input')[1]).val('1');
+                      }
+                      else{
+                        thiis.children('span').text('Unfollow');
+                        thiis.children('span').addClass('unfloow');
+                        thiis.children('span').removeClass('floow');
+                        $(thiis.children('input')[1]).val('0');
+                      }
+                  }
+            });
+            return false;
+          });
+        });
+        
+
+    </script>
   </div>
 </div>
 

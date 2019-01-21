@@ -45,6 +45,16 @@ class Migration(migrations.Migration):
         ),
 
         migrations.CreateModel(
+            name='Follow',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('userFrom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('userTo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('value', models.IntegerField(default=0)),
+            ],
+        ),
+
+        migrations.CreateModel(
             name='DeckCard',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

@@ -46,6 +46,11 @@ class Deck(models.Model):
     def __str__(self):
         return self.title
 
+class Follow(models.Model):
+    userFrom = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followFrom_id') # Field name made lowercase.
+    userTo = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followTo_id')  # Field name made lowercase.
+    value = models.IntegerField(default=0)
+
 class Hero(models.Model):
     name = models.TextField(max_length=30, blank=False)
     playerClass = models.TextField(max_length=50, blank=False, default="NaN")

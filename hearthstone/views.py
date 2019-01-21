@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 import json
 import os
-from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard, Chat, Forum, Topic, Post
+from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard, Chat, Forum, Topic, Post, Follow
 from random import randint
 from pprint import pprint
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
@@ -107,6 +107,39 @@ def change_troc(request):
     message = request.POST['value']
 
     return HttpResponse(message, content_type='application/json')
+
+@csrf_exempt
+def change_follow(request):
+
+    if not Follow.objects.all().filter(userFrom = request.POST['mnid']).filter(userTo = request.POST['idUser']):
+
+        user1 = User.objects.get(id=request.POST['mnid'])
+        user2 = User.objects.get(id=request.POST['idUser'])
+
+        follow = Follow(userFrom = user1, userTo = user2 , value = request.POST['value'])
+        follow.save()
+
+    else:
+
+        user1 = User.objects.get(id=request.POST['mnid'])
+        user2 = User.objects.get(id=request.POST['idUser'])
+
+        follow = Follow.objects.get(userFrom = user1, userTo = user2)
+        follow.value = request.POST['value']
+        follow.save()
+
+    message = request.POST['value']
+
+    return HttpResponse(message, content_type='application/json')
+
+
+@csrf_exempt
+def get_follow(request):
+    user1 = User.objects.get(id=request.POST['myId'])
+    user2 = User.objects.get(id=request.POST['hisId'])
+    follow = Follow.objects.get(userFrom = user1, userTo = user2)
+    messageList_json = serializers.serialize('json', [ follow, ])
+    return HttpResponse(messageList_json, content_type='application/json')
     
 def getTrocCards(request, user_id):
     cardsTroc = UserCard.objects.filter(user_id=user_id).filter(troc=1).select_related("card")
@@ -212,7 +245,8 @@ def sellCard(request, card_id, rarity):
 
 def check(request):
     userList = User.objects.values()
-    return render(request, 'hearthstone/check.html', {'userList': userList})
+    followList = Follow.objects.filter(userFrom = request.user.id).select_related("userFrom")
+    return render(request, 'hearthstone/check.html', {'userList': userList, 'followList': followList})
 
 def checkPlayerCards(request, user_id):
     userList = User.objects.values()
