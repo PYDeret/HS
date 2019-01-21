@@ -14,11 +14,11 @@ services:
         - 8080:8080
   web:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:80
+    command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
       - db
   mailhog:
