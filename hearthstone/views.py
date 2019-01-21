@@ -135,11 +135,18 @@ def change_follow(request):
 
 @csrf_exempt
 def get_follow(request):
-    user1 = User.objects.get(id=request.POST['myId'])
-    user2 = User.objects.get(id=request.POST['hisId'])
-    follow = Follow.objects.get(userFrom = user1, userTo = user2)
-    messageList_json = serializers.serialize('json', [ follow, ])
-    return HttpResponse(messageList_json, content_type='application/json')
+
+    try:
+        user1 = User.objects.get(id=request.POST['myId'])
+        user2 = User.objects.get(id=request.POST['hisId'])
+        follow = Follow.objects.get(userFrom = user1, userTo = user2)
+        messageList_json = serializers.serialize('json', [ follow, ])
+        return HttpResponse(messageList_json, content_type='application/json')
+    except Follow.DoesNotExist:
+        message = 'ko'
+        return HttpResponse(message)
+
+    
     
 def getTrocCards(request, user_id):
     cardsTroc = UserCard.objects.filter(user_id=user_id).filter(troc=1).select_related("card")

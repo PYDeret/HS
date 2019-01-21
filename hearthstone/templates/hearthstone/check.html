@@ -61,28 +61,45 @@
                 },
                 success: function(data){
 
-                    if(data[0].fields.value == 1){
-                      thiis.append(
-                        '<div class="followDiv">'+
-                          '<a href=""  class="afollow" onclick="return false;">'+
-                            '<span class="unfloow">Unfollow</span>'+
-                            '<input type="hidden" value="'+idmk+'"/>'+
-                            '<input type="hidden" value="0"/>'+
-                          '</a>'+
-                        '</div>'
-                      );
+                    console.log(data)
+
+                    if(data == "ko"){
+                        thiis.append(
+                          '<div class="followDiv">'+
+                            '<a href=""  class="afollow" onclick="fillUp('+idmk+','+1+');return false;">'+
+                              '<span class="floow">Follow</span>'+
+                              '<input type="hidden" value="'+idmk+'"/>'+
+                              '<input type="hidden" value="1"/>'+
+                            '</a>'+
+                          '</div>'
+                        );
                     }
                     else{
-                      thiis.append(
-                        '<div class="followDiv">'+
-                          '<a href=""  class="afollow" onclick="return false;">'+
-                            '<span class="floow">Follow</span>'+
-                            '<input type="hidden" value="'+idmk+'"/>'+
-                            '<input type="hidden" value="1"/>'+
-                          '</a>'+
-                        '</div>'
-                      );
+                      if(data[0].fields.value == 1){
+                        thiis.append(
+                          '<div class="followDiv">'+
+                            '<a href="" class="afollow" onclick="return false;">'+
+                              '<span class="unfloow">Unfollow</span>'+
+                              '<input type="hidden" value="'+idmk+'"/>'+
+                              '<input type="hidden" value="0"/>'+
+                            '</a>'+
+                          '</div>'
+                        );
+                      }
+                      else{
+                        thiis.append(
+                          '<div class="followDiv">'+
+                            '<a href=""  class="afollow" onclick="return false;">'+
+                              '<span class="floow">Follow</span>'+
+                              '<input type="hidden" value="'+idmk+'"/>'+
+                              '<input type="hidden" value="1"/>'+
+                            '</a>'+
+                          '</div>'
+                        );
+                      }
                     }
+
+                    
                 }
               });
 
@@ -90,13 +107,52 @@
             });
         });
 
+        function fillUp(idUsr, val){
+
+            mnid = parseInt($('#mnid').val());
+            thiis = $(this);
+
+            console.log(mnid);
+            console.log(idUsr);
+            console.log(val);
+            console.log(thiis);
+
+            $.ajax({
+                  type:"POST",
+                  url:"/follow/",
+                  data: {
+                        'idUser': idUsr,
+                        'mnid': mnid,
+                        'value': val
+                        },
+                  success: function(data){
+
+                      if(data == 0){
+                        thiis.children('span').html('Follow');
+                        thiis.children('span').addClass('floow');
+                        thiis.children('span').removeClass('unfloow');
+                        $(thiis.children('input')[1]).val('1');
+                      }
+                      else{
+                        thiis.children('span').text('Unfollow');
+                        thiis.children('span').addClass('unfloow');
+                        thiis.children('span').removeClass('floow');
+                        $(thiis.children('input')[1]).val('0');
+                      }
+                  }
+            });
+        }
+
         $( window ).on("load", function() {
+
           $('.afollow').on('click', function(){
 
             mnid = parseInt($('#mnid').val());
             idUsr = parseInt($($(this).children("input")[0]).val())
             val = parseInt($($(this).children("input")[1]).val());
             thiis = $(this);
+
+            console.log(thiis);
 
             $.ajax({
                   type:"POST",
