@@ -19,11 +19,25 @@
 
 
     <h2 style="margin-top:50px;padding:15px">Liste des dernières parties</h2>
-    <div class="games mb-5">
+    <div class="games mb-5" style="padding:20px">
 
       {% for game in games %}
-      <p class="lead">{{ game.user1.username }} vs. {{ game.user2.username }} <a class="small" href="{% url 'game' %}">Voir le match</a></p>
+
+
+      {% if game.gagnant == request.user %}
+
+        <p class="lead">{{ game.attaquant.username }} vs. {{ game.defenseur.username }} - <span style="color:green">Gagnant</span></p> 
+
+      {% else %}
+
+        <p class="lead">{{ game.attaquant.username }} vs. {{ game.defenseur.username }} - <span style="color:red">Perdant</span></p> 
+
+      {% endif %}
+
+      
+    
       {% empty %}
+
       <p>Aucune partie pour le moment.</p>
       {% endfor %}
 

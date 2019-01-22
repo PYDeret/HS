@@ -67,8 +67,13 @@ def index(request):
                     rarity= card.get("rarity","NAN"),
                     img_url=card.get("img","https://i.imgur.com/U1dkXzQ.png"),
                 )
+
+    if Party.objects.all() != False and request.user.id != False:
+        games = Party.objects.all().filter(Q(attaquant=request.user.id) | Q(defenseur=request.user.id))
+    else:
+        games = ""
                 
-    return render(request, 'hearthstone/index.html')
+    return render(request, 'hearthstone/index.html', {'games': games})
 
 def home(request):
     title = 'Accueil'
