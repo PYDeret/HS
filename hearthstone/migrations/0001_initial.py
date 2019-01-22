@@ -81,8 +81,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateTimeField(default=django.utils.timezone.now)),
                 ('attaquant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Attaquant', to=settings.AUTH_USER_MODEL)),
-                ('defenseur', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Defenseur', to=settings.AUTH_USER_MODEL)),
-                ('gagnant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('defenseur', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Defenseur', to=settings.AUTH_USER_MODEL, null=True)),
+                ('gagnant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, null=True)),
             ],
         ),
         migrations.CreateModel(

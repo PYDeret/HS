@@ -3,9 +3,15 @@
 {% block content %}
 <div class="row my-5">
   <div class="col-md-12">
-    <h1>Jouer au jeu</h1>
+    <h1 style="padding:15px">Jouer au jeu</h1>
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aspernatur aut corporis debitis dolore eius fugiat incidunt iusto laboriosam nesciunt nisi nostrum qui, vel voluptatibus voluptatum. Facilis nihil quis quod.</p>
+    <div class="row">
+      <span style="margin:0 auto;">
+        <a href="{% url 'game' %}" class="btn btn-primary btn-lg">Jouer contre un bot</a>
+        <a href="{% url 'game' %}" class="btn btn-primary btn-lg">Jouer contre un joueur</a>
+      </span>
+    </div>
+
   </div>
 </div>
 

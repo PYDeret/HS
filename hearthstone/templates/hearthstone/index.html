@@ -8,9 +8,17 @@
 
     {% if request.user.is_authenticated %}
 
-    <a href="{% url 'game' %}" class="btn btn-primary btn-lg">Jouer</a>
+    <h1 style="padding:15px">Jouer</h1>
 
-    <h2>Liste des dernières parties</h2>
+    <div class="row">
+      <span style="margin:0 auto;">
+        <a href="{% url 'deck_choose' 'bot' %}" class="btn btn-primary btn-lg">Jouer contre un bot</a>
+        <a href="{% url 'deck_choose' 'other' %}" class="btn btn-primary btn-lg">Jouer contre un joueur</a>
+      </span>
+    </div>
+
+
+    <h2 style="margin-top:50px;padding:15px">Liste des dernières parties</h2>
     <div class="games mb-5">
 
       {% for game in games %}

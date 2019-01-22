@@ -25,7 +25,7 @@ SECRET_KEY = '#(g3pr!@8a987+iw^hq=ey5u3=2ta0va4)2=5e9+=2tkvm3ez5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["51.68.121.252", "Gesport.ovh"]
+ALLOWED_HOSTS = ["51.68.121.252", "Gesport.ovh", "localhost"]
 
 
 # Application definition
@@ -133,4 +133,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'pierreyves.deret@gmail.com'
-EMAIL_HOST_PASSWORD = 'Boudjema78'
+EMAIL_HOST_PASSWORD = 'BumbleB5'

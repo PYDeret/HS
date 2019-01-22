@@ -24,6 +24,7 @@ from hearthstone.forms import TopicForm, PostForm
 
 
 
+
 def index(request):
     if not Hero.objects.all():
         module_dir = os.path.dirname(__file__)  # get current directory
@@ -173,6 +174,34 @@ def trocValidate(request, usercard_id, myusercard_id):
     card2.save()
 
     return redirect('check')
+
+
+def deck_choose(request, str):
+    userList = User.objects.values()
+    decksUser = Deck.objects.all().filter(user_id=request.user.id).filter(finished=1)
+    return render(request, 'hearthstone/choose_deck.html', {'userList': userList, "param": str, "decks": decksUser})
+
+def choosebot(request):
+    val = randint(0, 1)
+
+    if val == 0:
+
+        user1 = User.objects.get(id=request.user.id)
+
+        game = Party(attaquant = user1)
+        game.save()
+
+    else:
+
+        user1 = User.objects.get(id=request.user.id)
+
+        game = Party(attaquant = user1, gagnant = user1)
+        game.save()
+
+        request.user.profile.credit += 100
+        request.user.save()
+
+    return redirect('home')
 
 def register(request):
     if request.user.is_authenticated:

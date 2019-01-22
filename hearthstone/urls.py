@@ -34,8 +34,9 @@ urlpatterns = [
     path('check/player/troc/choosecard/<int:usercard_id>', views.trocChooseCard, name='trocChooseCard'),
     path('check/player/troc/validate/<int:usercard_id>/<int:myusercard_id>', views.trocValidate, name='trocValidate'),
     path('follow/', views.change_follow, name='follow'),
-    path('get_follow/', views.get_follow, name="get_follow")
-
+    path('get_follow', views.get_follow, name="get_follow"),
+    path('deck_choose/<str>', views.deck_choose, name="deck_choose"),
+    path('choosebot/', views.choosebot, name="choosebot"),
 ]
 
 

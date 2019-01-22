@@ -80,8 +80,8 @@ class UserCard(models.Model):
     
 class Party(models.Model):
     attaquant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Attaquant')
-    defenseur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Defenseur')
-    gagnant = models.ForeignKey(User, on_delete=models.CASCADE)
+    defenseur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Defenseur', null=True)
+    gagnant = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
