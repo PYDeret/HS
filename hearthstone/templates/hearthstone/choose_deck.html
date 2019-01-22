@@ -8,20 +8,42 @@
 
     <h1 style="padding:15px">Choisir son deck</h1>
 
+    {% if param == "other" %}
+
     <div class="row" style="margin-top: 40px;padding:10px">
-      {% for deck in decks %}
-      <div class="col-3 text-center my-4">
-        <a href="{% url 'choosebot' %}" onclick="return confirm('Êtes vous sur de vouloir choisir ce deck ?')">
-          <img src="{% static 'images/hs_back.png' %}" style="width:100%"/>
-          <span style="color: black;font-size: 20px;font-family: cursive;">{{deck.title}}</span>
-        </a>
-      </div>
-      {% empty %}
-      <div class="col">
-        Vous n'avez pas encore de decks.
-      </div>
-      {% endfor %}
+        {% for deck in decks %}
+        <div class="col-3 text-center my-4">
+            <a href="{% url 'chooseother' %}" onclick="return confirm('Êtes vous sur de vouloir choisir ce deck ?')">
+            <img src="{% static 'images/hs_back.png' %}" style="width:100%"/>
+            <span style="color: black;font-size: 20px;font-family: cursive;">{{deck.title}}</span>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col">
+            Vous n'avez pas encore de decks.
+        </div>
+        {% endfor %}
     </div>
+
+    {% else %}
+
+        <div class="row" style="margin-top: 40px;padding:10px">
+        {% for deck in decks %}
+        <div class="col-3 text-center my-4">
+            <a href="{% url 'choosebot' %}" onclick="return confirm('Êtes vous sur de vouloir choisir ce deck ?')">
+            <img src="{% static 'images/hs_back.png' %}" style="width:100%"/>
+            <span style="color: black;font-size: 20px;font-family: cursive;">{{deck.title}}</span>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col">
+            Vous n'avez pas encore de decks.
+        </div>
+        {% endfor %}
+        </div>
+
+    {% endif %}
+
   </div>
 </div>
 

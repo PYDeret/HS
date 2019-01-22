@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 import json
 import os
-from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard, Chat, Forum, Topic, Post, Follow
+from hearthstone.models import Hero, Minion, Card, Spell, Deck, Party, UserCard, Chat, Forum, Topic, Post, Follow, Room
 from random import randint
 from pprint import pprint
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
@@ -202,6 +202,60 @@ def choosebot(request):
         request.user.save()
 
     return redirect('home')
+
+def chooseother(request):
+    userList = User.objects.values()
+    decksUser = Deck.objects.all().filter(user_id=request.user.id).filter(finished=1)
+
+    if not Room.objects.all().filter(J1__isnull=False, J2__isnull=True):
+        user1 = User.objects.get(id=request.user.id)
+        room = Room(J1 = user1)
+        room.save()
+        user2 = ""
+        decksOther = ""
+
+    else:
+        room = Room.objects.get(J1__isnull=False, J2__isnull=True)
+        user2 = User.objects.get(id=request.user.id)
+        decksOther = Deck.objects.all().filter(user_id=room.J1).filter(finished=1)
+        room.J2 = user2
+        room.save()
+        user1 = User.objects.get(id=room.J1.id)
+
+        other = decksUser = Deck.objects.all().filter(user_id=request.user.id).filter(finished=1)
+
+    return render(request, 'hearthstone/choose_deck_users.html', {'userList': userList, "param": str, "decks": decksUser, "room": room, "decksOther": decksOther, "user1":user1, "user2":user2})
+
+
+
+def chooseotherwin(request, user1_id, user2_id):
+    val = randint(0, 1)
+
+    if val == 0:
+
+        user11 = User.objects.get(id=user1_id)
+        user22 = User.objects.get(id=user2_id)
+
+        game = Party(attaquant = user11, defenseur = user22, gagnant = user11)
+        game.save()
+
+        user11.profile.credit += 100
+        user11.save()
+
+    else:
+
+        user11 = User.objects.get(id=user1_id)
+        user22 = User.objects.get(id=user2_id)
+
+        game = Party(attaquant = user11, defenseur = user22, gagnant = user22)
+        game.save()
+
+        user22.profile.credit += 100
+        user22.save()
+
+    return redirect('home')
+
+
 
 def register(request):
     if request.user.is_authenticated:

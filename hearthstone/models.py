@@ -66,6 +66,10 @@ class Minion(Card):
     def __str__(self):
         return self.name
 
+class Room(models.Model):
+    J1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='J1')
+    J2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='J2', null=True)
+
 class Spell(Card):
 
     def __str__(self):

@@ -1,0 +1,56 @@
+{% extends "hearthstone/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="row my-5">
+  <div class="col-md-12" style="margin-top:50px">
+
+    <h1 style="padding:15px">Partie contre un joueur</h1>
+
+        <div class="row" style="margin-top: 40px;padding:10px" id="cmon">
+        {% for deck in decks %}
+        <div class="col-3 text-center my-4">
+            <img src="{% static 'images/hs_back.png' %}" style="width:100%"/>
+            <span style="color: black;font-size: 20px;font-family: cursive;">{{deck.title}}</span>
+        </div>
+        
+        {% empty %}
+        <div class="col">
+            Vous n'avez pas encore de decks.
+        </div>
+        {% endfor %}
+
+
+        {% if room.J1 and room.J2 %}
+
+        {% for deckOther in decksOther %}
+        <div class="col-3 text-center my-4">
+            <img src="{% static 'images/hs_back.png' %}" style="width:100%"/>
+            <span style="color: black;font-size: 20px;font-family: cursive;">{{deckOther.title}}</span>
+        </div>
+        
+        {% endfor %}
+
+        </div>
+
+        <div class="row">
+            <a href='{% url "chooseotherwin" user1.id user2.id %}' class="btn btn-primary btn-lg" style="margin: 0 auto;">Jouer</a>
+
+        {% else %}
+
+        <div class="row">
+            <a href='' class="btn btn-primary btn-lg" style="margin: 0 auto;display:none;" disabled>Jouer</a>
+        </div>
+
+        {% endif %}
+        </div>
+
+        
+
+        <input type="hidden" id="idroom" value="{{room.id}}"/>
+
+  </div>
+</div>
+
+{% endblock content %}

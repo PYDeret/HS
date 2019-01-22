@@ -37,6 +37,8 @@ urlpatterns = [
     path('get_follow', views.get_follow, name="get_follow"),
     path('deck_choose/<str>', views.deck_choose, name="deck_choose"),
     path('choosebot/', views.choosebot, name="choosebot"),
+    path('chooseother/', views.chooseother, name="chooseother"),
+    path('chooseotherwin/<int:user1_id>/<int:user2_id>', views.chooseotherwin, name="chooseotherwin"),
 ]
 
 
